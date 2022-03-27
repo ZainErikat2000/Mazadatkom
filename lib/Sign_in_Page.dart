@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mazadatkom/Custom%20Widgets/SocialSignInButton.dart';
 
 class SignInPage extends StatelessWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -6,7 +7,7 @@ class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         backgroundColor: Colors.orangeAccent,
         title: const Text(
@@ -18,7 +19,7 @@ class SignInPage extends StatelessWidget {
       ),
       body: Container(
         margin: const EdgeInsets.all(60),
-        color: Colors.red,
+        color: Colors.grey[300],
         alignment: Alignment.center,
         child: Column(
           children: <Widget>[
@@ -30,85 +31,24 @@ class SignInPage extends StatelessWidget {
               height: 32,
             ),
             //google sign in button
-            TextButton(
-              onPressed: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Opacity(
-                    child: Image.asset(
-                      'assets/images/google-logo.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    opacity: 1.0,
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  const Text(
-                    'Sign in with Google',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Opacity(
-                    child: Image.asset(
-                      'assets/images/google-logo.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    opacity: 0.0,
-                  ),
-                ],
-              ),
-              style: TextButton.styleFrom(
-                  backgroundColor: Colors.white, shadowColor: Colors.grey[300]),
-            ),
+            SocialSignInButton(
+                onPressed: () {},
+                imageAsset: 'assets/images/google-logo.png',
+                buttonText: 'Sign in with Google',
+                buttonColor: Colors.white,
+                shadowColor: Colors.grey[300],
+                textColor: Colors.blue,),
             const SizedBox(
               height: 8,
             ),
             //sign in with facebook
-            TextButton(
-              onPressed: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Opacity(
-                    child: Image.asset(
-                      'assets/images/facebook-logo.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    opacity: 1.0,
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  const Text(
-                    'Sign in with Facebook',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Opacity(
-                    child: Image.asset(
-                      'assets/images/facebook-logo.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    opacity: 0.0,
-                  ),
-                ],
-              ),
-              style: TextButton.styleFrom(
-                  backgroundColor: Colors.blue, shadowColor: Colors.grey[300]),
-            ),
+        SocialSignInButton(
+          onPressed: () {},
+          imageAsset: 'assets/images/facebook-logo.png',
+          buttonText: 'Sign in with Facebook',
+          buttonColor: Colors.blue,
+          shadowColor: Colors.grey[300],
+          textColor: Colors.white,),
             const SizedBox(
               height: 8,
             ),
