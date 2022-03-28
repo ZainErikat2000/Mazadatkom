@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 class SocialSignInButton extends StatelessWidget {
   const SocialSignInButton({Key? key, required this.onPressed,
   required this.imageAsset, required this.buttonText, required this.buttonColor
-  , required this.shadowColor, required this.textColor}) : super(key: key);
+  , required this.shadowColor, required this.textColor, required this.imageOpacity}) : super(key: key);
   final void Function()? onPressed;
   final String imageAsset;
   final String buttonText;
   final Color buttonColor;
   final Color? shadowColor;
   final Color textColor;
+  final double imageOpacity;
 
 
   @override
@@ -25,7 +26,7 @@ class SocialSignInButton extends StatelessWidget {
               width: 24,
               height: 24,
             ),
-            opacity: 1.0,
+            opacity: imageOpacity,
           ),
           const SizedBox(
             width: 16,

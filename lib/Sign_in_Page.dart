@@ -32,35 +32,38 @@ class SignInPage extends StatelessWidget {
             ),
             //google sign in button
             SocialSignInButton(
-                onPressed: () {},
-                imageAsset: 'assets/images/google-logo.png',
-                buttonText: 'Sign in with Google',
-                buttonColor: Colors.white,
-                shadowColor: Colors.grey[300],
-                textColor: Colors.blue,),
+              onPressed: () {},
+              imageAsset: 'assets/images/google-logo.png',
+              buttonText: 'Sign in with Google',
+              buttonColor: Colors.white,
+              shadowColor: Colors.grey[300],
+              textColor: Colors.blue,
+              imageOpacity: 1.0,
+            ),
             const SizedBox(
               height: 8,
             ),
             //sign in with facebook
-        SocialSignInButton(
-          onPressed: () {},
-          imageAsset: 'assets/images/facebook-logo.png',
-          buttonText: 'Sign in with Facebook',
-          buttonColor: Colors.blue,
-          shadowColor: Colors.grey[300],
-          textColor: Colors.white,),
+            SocialSignInButton(
+              onPressed: () {},
+              imageAsset: 'assets/images/facebook-logo.png',
+              buttonText: 'Sign in with Facebook',
+              buttonColor: Colors.blue,
+              shadowColor: Colors.grey[300],
+              textColor: Colors.white,
+              imageOpacity: 1.0,
+            ),
             const SizedBox(
               height: 8,
             ),
-            ElevatedButton(
+            SocialSignInButton(
               onPressed: () {},
-              child: const Text(
-                'Sign in with Google',
-                style: TextStyle(color: Colors.black54),
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-              ),
+              imageAsset: 'assets/images/facebook-logo.png',
+              buttonText: 'Sign in with Email',
+              buttonColor: Colors.lime,
+              shadowColor: Colors.black,
+              textColor: Colors.black,
+              imageOpacity: 0.0,
             ),
           ],
           mainAxisAlignment: MainAxisAlignment.center,

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1019828646518",
+    "project_id": "mazadatkom-b87a7",
+    "storage_bucket": "mazadatkom-b87a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019828646518:android:7aa65f2e82b363ee9da557",
+        "android_client_info": {
+          "package_name": "com.example.mazadatkom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1019828646518-mv7s9us0qhpfuvn378f7cu7oqqtpk5ih.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mazadatkom",
+            "certificate_hash": "17c0edfe9fb5cef2518a7bd0c2745c5eb39499e2"
+          }
+        },
+        {
+          "client_id": "1019828646518-mr8tqq1n2dmpoi7581dijne3fkhkl6u8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMGld1LmAA71feqn8KGnC_-ME1X2yqOJ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1019828646518-mr8tqq1n2dmpoi7581dijne3fkhkl6u8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
