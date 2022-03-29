@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mazadatkom/Custom%20Widgets/SocialSignInButton.dart';
+import 'package:mazadatkom/Custom_Widgets/SocialSignInButton.dart';
 
 class SignInPage extends StatelessWidget {
   const SignInPage({Key? key}) : super(key: key);

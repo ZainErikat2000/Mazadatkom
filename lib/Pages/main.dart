@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mazadatkom/Sign_in_Page.dart';
+import 'package:mazadatkom/Pages/Auth_Wraper.dart';
+import 'package:mazadatkom/Pages/Sign_in_Page.dart';
 
 void main()
 {
@@ -11,6 +12,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: SignInPage(),);
+    return const MaterialApp(home: AuthWrapper(),);
   }
 }
