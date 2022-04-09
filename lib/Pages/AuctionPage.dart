@@ -6,28 +6,40 @@ class AuctionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text(
           "Auction",
         ),
         centerTitle: true,
       ),
-      body:  Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const SizedBox(
-              child: Text("Item Image"),
+              width: 150,
+              height: 150,
+              child: DecoratedBox(
+                child: Icon(Icons.image),
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            const SizedBox(
+              child: Text("Item"),
             ),
             ElevatedButton(
               onPressed: () {
                 print("bidding");
               },
-              child: Text("Bid: "),
+              child: const Text("Bid: "),
             ),
             ElevatedButton(
-              onPressed: () {Navigator.pop(context);},
+              onPressed: () {
+                Navigator.pop(context);
+              },
               child: const Text("Exit Auction"),
             )
           ],

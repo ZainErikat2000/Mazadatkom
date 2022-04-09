@@ -10,8 +10,16 @@ class ItemInfoPage extends StatefulWidget {
 
 class _ItemInfoPageState extends State<ItemInfoPage> {
 
-  Widget _buildItemBox(BuildContext context){
-    return ItemBox(color: Colors.white, itemName: '', description: '', date: '', minBid: 1,startPrice: 1,);
+
+  Widget buildItemBox(BuildContext context) {
+    return ItemBox(
+      color: Colors.white,
+      itemName: '',
+      description: '',
+      date: '',
+      minBid: 1,
+      startPrice: 1,
+    );
   }
 
   @override

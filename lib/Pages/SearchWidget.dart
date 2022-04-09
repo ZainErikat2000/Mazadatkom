@@ -12,6 +12,7 @@ class SearchWidget extends StatefulWidget {
 class _SearchWidgetState extends State<SearchWidget> {
   Icon searchIcon = const Icon(Icons.search);
   Widget searchBar = const Text("Search");
+  int listItemsCount = 5;
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +46,29 @@ class _SearchWidgetState extends State<SearchWidget> {
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               return ItemBox(
-                  color: index.isOdd ? Colors.grey[300] : Colors.white,
-                  itemName: 'Item ${index + 1}',
-                  description: "Hello, I'm item ${index + 1} ");
+                color: index.isOdd ? Colors.grey[300] : Colors.white,
+                itemName: 'Item ${index + 1}',
+                description: "This is item ${index + 1} ",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AuctionPage(),
+                    ),
+                  );
+                },
+              );
             },
-            itemCount: 6,
+            itemCount: listItemsCount,
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          setState(() {
+            listItemsCount++;
+          });
+        },
         tooltip: 'increment',
         child: const Icon(Icons.add),
       ),
