@@ -51,7 +51,7 @@ class DataBaseHelper {
     //Create items table
     await database.execute('''
     CREATE TABLE $_itemsTableName(
-    $_itemColID INT PRIMARY KEY,
+    $_itemColID INT PRIMARY KEY AUTOINCREMENT,
     $_itemColName TEXT NOT NULL,
     $_itemColDescription TEXT NOT NULL
     )
@@ -83,11 +83,16 @@ class DataBaseHelper {
     ''', [item.id]),
     );
 
-    if(count == 0){
-      await database.insert(_itemsTableName, item.toMap() , conflictAlgorithm: ConflictAlgorithm.replace);
-    }
-    else{
-      await database.update(_itemsTableName, item.toMap(), where: "$_itemColID = ?", whereArgs: [item.id],);
+    if (count == 0) {
+      await database.insert(_itemsTableName, item.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    } else {
+      await database.update(
+        _itemsTableName,
+        item.toMap(),
+        where: "$_itemColID = ?",
+        whereArgs: [item.id],
+      );
     }
 
     return item;
@@ -103,21 +108,27 @@ class DataBaseHelper {
     ''', [auction.id]),
     );
 
-    if(count == 0){
-      await database.insert(_auctionTableName, auction.toMap() , conflictAlgorithm: ConflictAlgorithm.replace);
-    }
-    else{
-      await database.update(_auctionTableName, auction.toMap(), where: "$_auctionColID = ?", whereArgs: [auction.id],);
+    if (count == 0) {
+      await database.insert(_auctionTableName, auction.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    } else {
+      await database.update(
+        _auctionTableName,
+        auction.toMap(),
+        where: "$_auctionColID = ?",
+        whereArgs: [auction.id],
+      );
     }
 
     return auction;
   }
 
   //fetch an item
-  Future<Item> fetchItem(int id) async{
+  Future<Item> fetchItem(int id) async {
     Database database = await instance.database;
 
-    List<Map<String, dynamic>> queryResults = await database.query(_itemsTableName , where: "$_itemColID = ?" , whereArgs: [id]);
+    List<Map<String, dynamic>> queryResults = await database
+        .query(_itemsTableName, where: "$_itemColID = ?", whereArgs: [id]);
 
     Item item = Item.fromMap(queryResults[0]);
 
@@ -125,10 +136,11 @@ class DataBaseHelper {
   }
 
   //fetch an auction
-  Future<Auction> fetchAuction(int id) async{
+  Future<Auction> fetchAuction(int id) async {
     Database database = await instance.database;
 
-    List<Map<String, dynamic>> queryResults = await database.query(_auctionTableName , where: "$_auctionColID = ?" , whereArgs: [id]);
+    List<Map<String, dynamic>> queryResults = await database
+        .query(_auctionTableName, where: "$_auctionColID = ?", whereArgs: [id]);
 
     Auction auction = Auction.fromMap(queryResults[0]);
 
@@ -139,7 +151,8 @@ class DataBaseHelper {
   Future<List<Item>> fetchListOfItems() async {
     Database database = await instance.database;
 
-    List<Map<String, dynamic>> queryResult = await database.query(_itemsTableName);
+    List<Map<String, dynamic>> queryResult =
+        await database.query(_itemsTableName);
 
     List<Item> items = [];
 
@@ -154,7 +167,8 @@ class DataBaseHelper {
   Future<List<Auction>> fetchListOfAuctions() async {
     Database database = await instance.database;
 
-    List<Map<String, dynamic>> queryResult = await database.query(_auctionTableName);
+    List<Map<String, dynamic>> queryResult =
+        await database.query(_auctionTableName);
 
     List<Auction> auctions = [];
 
@@ -167,11 +181,11 @@ class DataBaseHelper {
   }
 
   //Delete item and its auction
-  Future deleteItem(int id) async{
+  Future deleteItem(int id) async {
     Database database = await instance.database;
-    await database.delete(_itemsTableName , where: "$_itemColID = ?", whereArgs: [id]);
-    await database.delete(_auctionTableName , where: "$_auctionTableName = ?", whereArgs: [id]);
+    await database
+        .delete(_itemsTableName, where: "$_itemColID = ?", whereArgs: [id]);
+    await database.delete(_auctionTableName,
+        where: "$_auctionTableName = ?", whereArgs: [id]);
   }
-
-
 }

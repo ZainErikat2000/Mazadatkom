@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mazadatkom/Pages/AuctionPage.dart';
 import 'package:mazadatkom/Pages/ItemWidget.dart';
+import 'package:mazadatkom/Pages/ItemForm.dart';
 
 class SearchWidget extends StatefulWidget {
   const SearchWidget({Key? key}) : super(key: key);
@@ -65,9 +66,7 @@ class _SearchWidgetState extends State<SearchWidget> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            listItemsCount++;
-          });
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ItemFormPage()));
         },
         tooltip: 'increment',
         child: const Icon(Icons.add),
