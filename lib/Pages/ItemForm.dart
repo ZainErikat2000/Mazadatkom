@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
+import 'package:mazadatkom/DBs/Item_Model.dart';
 import 'package:mazadatkom/Pages/ItemWidget.dart';
 
 class ItemFormPage extends StatefulWidget {
@@ -21,7 +22,18 @@ class _ItemFormPageState extends State<ItemFormPage> {
     );
   }
 
-  DataBaseHelper dataBaseHelper = DataBaseHelper.instance;
+
+  List<TextEditingController> _formInput = [new TextEditingController(),
+    new TextEditingController(),
+    new TextEditingController(),
+    new TextEditingController(),];
+
+  void getFormInputs() async{
+    Item item = Item(id: 1,name: _formInput[0].text , description: _formInput[1].text);
+
+    await DataBaseHelper.instance.insertItem(item);
+    await DataBaseHelper.instance.printItems();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,23 +51,23 @@ class _ItemFormPageState extends State<ItemFormPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Item Name'),
+              TextFormField(controller: _formInput[0],
+                decoration: const InputDecoration(labelText: 'Item Name',),
               ),
               const SizedBox(height: 8),
-              TextFormField(
+              TextFormField(controller: _formInput[1],
                 decoration:
                     const InputDecoration(labelText: 'Item Description'),
               ),
               const SizedBox(height: 8),
-              TextFormField(
+              TextFormField(controller: _formInput[2],
                 decoration: const InputDecoration(labelText: 'Min Bid'),
               ),
               const SizedBox(height: 8),
-              TextFormField(
+              TextFormField(controller: _formInput[3],
                 decoration: const InputDecoration(labelText: 'Start Price'),
               ),
-              ElevatedButton(onPressed: () {}, child: const Text('ok'))
+              ElevatedButton(onPressed: () {getFormInputs();}, child: const Text('ok'))
             ],
           ),
         ),

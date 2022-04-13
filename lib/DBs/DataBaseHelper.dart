@@ -6,34 +6,35 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DataBaseHelper {
-  static final _databaseName = 'mainDatabase.db';
-  static final _databaseVersion = 1;
+  static const _databaseName = 'mainDatabase.db';
+  static const _databaseVersion = 1;
 
   //Items table variables
-  static final _itemsTableName = 'Items';
-  static final _itemColID = 'id';
-  static final _itemColName = 'name';
-  static final _itemColDescription = 'description';
+  static const _itemsTableName = 'Items';
+  static const _itemColID = 'id';
+  static const _itemColName = 'name';
+  static const _itemColDescription = 'description';
 
   //Auction table variables
-  static final _auctionTableName = 'Auctions';
-  static final _auctionColID = 'id';
-  static final _auctionColStartPrice = 'start_price';
-  static final _auctionColMinBid = 'min_bid';
+  static const _auctionTableName = 'Auctions';
+  static const _auctionColID = 'id';
+  static const _auctionColStartPrice = 'start_price';
+  static const _auctionColMinBid = 'min_bid';
 
   //singleton
   DataBaseHelper._constructDB();
   static final DataBaseHelper instance = DataBaseHelper._constructDB();
-  static late Database _database;
+  static late final Database _database;
 
-  //get the databse
+  //get the database
   Future<Database> get database async {
-    //check if null
-    if (_database != null) return _database;
-
-    //if NULL initialize
-    _database = await _initiateDB();
+    try {
     return _database;
+    }
+    catch (e){
+      print(e.toString());
+    _database = await _initiateDB();
+    return _database;}
   }
 
   //initialize the database
@@ -51,7 +52,7 @@ class DataBaseHelper {
     //Create items table
     await database.execute('''
     CREATE TABLE $_itemsTableName(
-    $_itemColID INT PRIMARY KEY AUTOINCREMENT,
+    $_itemColID INT PRIMARY KEY,
     $_itemColName TEXT NOT NULL,
     $_itemColDescription TEXT NOT NULL
     )
@@ -74,118 +75,38 @@ class DataBaseHelper {
   }
 
   //Update or insert item to items table
-  Future<Item> updateInsertItem(Item item) async {
+  Future<void> insertItem(Item item) async {
     Database database = await instance.database;
 
-    var count = Sqflite.firstIntValue(
-      await database.rawQuery('''
-    SELECT COUNT(*) FROM $_itemsTableName WHERE $_itemColID = ?
-    ''', [item.id]),
-    );
-
-    if (count == 0) {
-      await database.insert(_itemsTableName, item.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace);
-    } else {
-      await database.update(
-        _itemsTableName,
-        item.toMap(),
-        where: "$_itemColID = ?",
-        whereArgs: [item.id],
-      );
-    }
-
-    return item;
+    await database.insert(_itemsTableName, item.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  //Update or insert item to items table
-  Future<Auction> updateInsertAuction(Auction auction) async {
+  Future<void> updateItem(Item item) async {
     Database database = await instance.database;
 
-    var count = Sqflite.firstIntValue(
-      await database.rawQuery('''
-    SELECT COUNT(*) FROM $_auctionTableName WHERE $_auctionColID = ?
-    ''', [auction.id]),
-    );
-
-    if (count == 0) {
-      await database.insert(_auctionTableName, auction.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace);
-    } else {
-      await database.update(
-        _auctionTableName,
-        auction.toMap(),
-        where: "$_auctionColID = ?",
-        whereArgs: [auction.id],
-      );
-    }
-
-    return auction;
+    await database.update(_itemsTableName, item.toMap(),
+        where: 'id = ?', whereArgs: [item.id]);
   }
 
-  //fetch an item
-  Future<Item> fetchItem(int id) async {
+  Future<void> insertAuction(Auction auction) async {
     Database database = await instance.database;
 
-    List<Map<String, dynamic>> queryResults = await database
-        .query(_itemsTableName, where: "$_itemColID = ?", whereArgs: [id]);
-
-    Item item = Item.fromMap(queryResults[0]);
-
-    return item;
+    await database.insert(_auctionTableName, auction.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  //fetch an auction
-  Future<Auction> fetchAuction(int id) async {
+  Future<void> updateAuction(Auction auction) async {
     Database database = await instance.database;
 
-    List<Map<String, dynamic>> queryResults = await database
-        .query(_auctionTableName, where: "$_auctionColID = ?", whereArgs: [id]);
-
-    Auction auction = Auction.fromMap(queryResults[0]);
-
-    return auction;
+    await database.update(_itemsTableName, auction.toMap(),
+        where: 'id = ?', whereArgs: [auction.id]);
   }
 
-  //fetch list of all items
-  Future<List<Item>> fetchListOfItems() async {
+  Future<void> printItems() async {
     Database database = await instance.database;
 
-    List<Map<String, dynamic>> queryResult =
-        await database.query(_itemsTableName);
+    await database.query(_itemsTableName);
 
-    List<Item> items = [];
-
-    queryResult.forEach((result) {
-      Item item = Item.fromMap(result);
-      items.add(item);
-    });
-
-    return items;
-  }
-
-  Future<List<Auction>> fetchListOfAuctions() async {
-    Database database = await instance.database;
-
-    List<Map<String, dynamic>> queryResult =
-        await database.query(_auctionTableName);
-
-    List<Auction> auctions = [];
-
-    queryResult.forEach((result) {
-      Auction auction = Auction.fromMap(result);
-      auctions.add(auction);
-    });
-
-    return auctions;
-  }
-
-  //Delete item and its auction
-  Future deleteItem(int id) async {
-    Database database = await instance.database;
-    await database
-        .delete(_itemsTableName, where: "$_itemColID = ?", whereArgs: [id]);
-    await database.delete(_auctionTableName,
-        where: "$_auctionTableName = ?", whereArgs: [id]);
   }
 }
