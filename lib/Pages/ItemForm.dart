@@ -22,17 +22,36 @@ class _ItemFormPageState extends State<ItemFormPage> {
     );
   }
 
+  int itemID =1;
+
 
   List<TextEditingController> _formInput = [new TextEditingController(),
     new TextEditingController(),
     new TextEditingController(),
     new TextEditingController(),];
 
-  void getFormInputs() async{
-    Item item = Item(id: 1,name: _formInput[0].text , description: _formInput[1].text);
+  @override
+  void dispose() {
+    for(int i = 0 ; i<_formInput.length ; i++)
+      {
+        _formInput[i].dispose();
+      }
+    super.dispose();
+  }
 
+  void getFormInputs() async{
+    Item item = Item(id: itemID,name: _formInput[0].text , description: _formInput[1].text);
     await DataBaseHelper.instance.insertItem(item);
+    setState(() {
+      itemID++;
+    });
+  }
+
+  void printItems()async{
     await DataBaseHelper.instance.printItems();
+  }
+  void clearItems() async {
+    await DataBaseHelper.instance.clearItemsTable();
   }
 
   @override
@@ -67,7 +86,9 @@ class _ItemFormPageState extends State<ItemFormPage> {
               TextFormField(controller: _formInput[3],
                 decoration: const InputDecoration(labelText: 'Start Price'),
               ),
-              ElevatedButton(onPressed: () {getFormInputs();}, child: const Text('ok'))
+              ElevatedButton(onPressed: () {getFormInputs();}, child: const Text('ok')),
+              ElevatedButton(onPressed: () {printItems();}, child: const Text('print log')),
+              ElevatedButton(onPressed: () {clearItems();}, child: const Text('clear items')),
             ],
           ),
         ),

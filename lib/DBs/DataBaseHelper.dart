@@ -24,24 +24,26 @@ class DataBaseHelper {
   //singleton
   DataBaseHelper._constructDB();
   static final DataBaseHelper instance = DataBaseHelper._constructDB();
-  static late final Database _database;
+  static Database? _database;
 
   //get the database
-  Future<Database> get database async {
-    try {
-    return _database;
+  Future<Database?> get database async {
+    if (_database != null) {
+      return _database;
     }
-    catch (e){
-      print(e.toString());
+
     _database = await _initiateDB();
-    return _database;}
+    return _database;
   }
 
   //initialize the database
-  _initiateDB() async {
+  Future<Database?> _initiateDB() async {
+    print('getting database path');
     Directory directory = await getApplicationDocumentsDirectory();
+    print(directory.path);
     String path = join(directory.path, _databaseName);
-    await openDatabase(path,
+    print(path);
+    return await openDatabase(path,
         version: _databaseVersion,
         onCreate: _onCreate,
         onConfigure: _onConfigure);
@@ -76,37 +78,55 @@ class DataBaseHelper {
 
   //Update or insert item to items table
   Future<void> insertItem(Item item) async {
-    Database database = await instance.database;
-
-    await database.insert(_itemsTableName, item.toMap(),
+    Database? database = await instance.database;
+    await database?.insert(_itemsTableName, item.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<void> updateItem(Item item) async {
-    Database database = await instance.database;
+    Database? database = await instance.database;
 
-    await database.update(_itemsTableName, item.toMap(),
+    await database?.update(_itemsTableName, item.toMap(),
         where: 'id = ?', whereArgs: [item.id]);
   }
 
   Future<void> insertAuction(Auction auction) async {
-    Database database = await instance.database;
+    Database? database = await instance.database;
 
-    await database.insert(_auctionTableName, auction.toMap(),
+    await database?.insert(_auctionTableName, auction.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<void> updateAuction(Auction auction) async {
-    Database database = await instance.database;
+    Database? database = await instance.database;
 
-    await database.update(_itemsTableName, auction.toMap(),
+    await database?.update(_itemsTableName, auction.toMap(),
         where: 'id = ?', whereArgs: [auction.id]);
   }
 
   Future<void> printItems() async {
-    Database database = await instance.database;
+    Database? database = await instance.database;
 
-    await database.query(_itemsTableName);
+    if (database == null) print('no database');
 
+    //prints table rows
+    (await database?.query(_itemsTableName,
+            columns: [_itemColID,_itemColName, _itemColDescription]))
+        ?.forEach((row) {
+      print(row);
+    });
+  }
+
+  Future<void> clearItemsTable() async{
+    //NO BETTER WAY OF CLEARING THE TABLE
+    Database? database = await instance.database;
+    database?.execute('DROP TABLE IF EXISTS $_itemsTableName');
+    await database?.execute('''
+    CREATE TABLE $_itemsTableName(
+    $_itemColID INT PRIMARY KEY,
+    $_itemColName TEXT NOT NULL,
+    $_itemColDescription TEXT NOT NULL
+    )
+    ''');
   }
 }
