@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mazadatkom/DBs/Auction_Model.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
 import 'package:mazadatkom/Pages/ItemWidget.dart';
@@ -22,36 +23,55 @@ class _ItemFormPageState extends State<ItemFormPage> {
     );
   }
 
-  int itemID =1;
+  int itemID = 1;
 
-
-  List<TextEditingController> _formInput = [new TextEditingController(),
-    new TextEditingController(),
-    new TextEditingController(),
-    new TextEditingController(),];
+  final List<TextEditingController> _formInput = [
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+  ];
 
   @override
   void dispose() {
-    for(int i = 0 ; i<_formInput.length ; i++)
-      {
-        _formInput[i].dispose();
-      }
+    for (int i = 0; i < _formInput.length; i++) {
+      _formInput[i].dispose();
+    }
     super.dispose();
   }
 
-  void getFormInputs() async{
-    Item item = Item(id: itemID,name: _formInput[0].text , description: _formInput[1].text);
+  void getFormInputs() async {
+    var itemsCount = await DataBaseHelper.instance.getItemsCount();
+
+    for(int i = 0; i<_formInput.length ; i++)
+      {
+        if(_formInput[i].text == '')
+          {
+            print('renter form');
+            return;
+          }
+      }
+
+    Item item = Item(
+        id: itemsCount,
+        name: _formInput[0].text,
+        description: _formInput[1].text);
     await DataBaseHelper.instance.insertItem(item);
-    setState(() {
-      itemID++;
-    });
+
+    Auction auction = Auction(
+        id: itemsCount,
+        startPrice: int.parse(_formInput[2].text),
+        minBid: int.parse(_formInput[2].text));
+    await DataBaseHelper.instance.insertAuction(auction);
   }
 
-  void printItems()async{
+  void printItems() async {
     await DataBaseHelper.instance.printItems();
+    await DataBaseHelper.instance.printAuctions();
   }
+
   void clearItems() async {
-    await DataBaseHelper.instance.clearItemsTable();
+    await DataBaseHelper.instance.clearTables();
   }
 
   @override
@@ -70,25 +90,43 @@ class _ItemFormPageState extends State<ItemFormPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              TextFormField(controller: _formInput[0],
-                decoration: const InputDecoration(labelText: 'Item Name',),
+              TextFormField(
+                controller: _formInput[0],
+                decoration: const InputDecoration(
+                  labelText: 'Item Name',
+                ),
               ),
               const SizedBox(height: 8),
-              TextFormField(controller: _formInput[1],
+              TextFormField(
+                controller: _formInput[1],
                 decoration:
                     const InputDecoration(labelText: 'Item Description'),
               ),
               const SizedBox(height: 8),
-              TextFormField(controller: _formInput[2],
+              TextFormField(
+                controller: _formInput[2],
                 decoration: const InputDecoration(labelText: 'Min Bid'),
               ),
               const SizedBox(height: 8),
-              TextFormField(controller: _formInput[3],
+              TextFormField(
+                controller: _formInput[3],
                 decoration: const InputDecoration(labelText: 'Start Price'),
               ),
-              ElevatedButton(onPressed: () {getFormInputs();}, child: const Text('ok')),
-              ElevatedButton(onPressed: () {printItems();}, child: const Text('print log')),
-              ElevatedButton(onPressed: () {clearItems();}, child: const Text('clear items')),
+              ElevatedButton(
+                  onPressed: () {
+                    getFormInputs();
+                  },
+                  child: const Text('ok')),
+              ElevatedButton(
+                  onPressed: () {
+                    printItems();
+                  },
+                  child: const Text('print log')),
+              ElevatedButton(
+                  onPressed: () {
+                    clearItems();
+                  },
+                  child: const Text('clear items')),
             ],
           ),
         ),

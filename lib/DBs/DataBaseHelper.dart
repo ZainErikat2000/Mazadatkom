@@ -54,7 +54,7 @@ class DataBaseHelper {
     //Create items table
     await database.execute('''
     CREATE TABLE $_itemsTableName(
-    $_itemColID INT PRIMARY KEY,
+    $_itemColID INT PRIMARY KEY AUTOINCREMENT NOT NULL,
     $_itemColName TEXT NOT NULL,
     $_itemColDescription TEXT NOT NULL
     )
@@ -85,9 +85,14 @@ class DataBaseHelper {
 
   Future<void> updateItem(Item item) async {
     Database? database = await instance.database;
-
     await database?.update(_itemsTableName, item.toMap(),
         where: 'id = ?', whereArgs: [item.id]);
+  }
+
+  Future<int?> getItemsCount()async{
+    Database? database = await instance.database;
+    List<Map>? result = await database?.query(_itemsTableName);
+    return result?.length;
   }
 
   Future<void> insertAuction(Auction auction) async {
@@ -107,8 +112,6 @@ class DataBaseHelper {
   Future<void> printItems() async {
     Database? database = await instance.database;
 
-    if (database == null) print('no database');
-
     //prints table rows
     (await database?.query(_itemsTableName,
             columns: [_itemColID,_itemColName, _itemColDescription]))
@@ -117,10 +120,24 @@ class DataBaseHelper {
     });
   }
 
-  Future<void> clearItemsTable() async{
+  Future<void> printAuctions() async {
+    Database? database = await instance.database;
+
+    //prints table rows
+    (await database?.query(_auctionTableName,
+        columns: [_auctionColID,_auctionColStartPrice, _auctionColMinBid]))
+        ?.forEach((row) {
+      print(row);
+    });
+  }
+
+  Future<void> clearTables() async{
     //NO BETTER WAY OF CLEARING THE TABLE
     Database? database = await instance.database;
-    database?.execute('DROP TABLE IF EXISTS $_itemsTableName');
+    await database?.execute('DROP TABLE IF EXISTS $_auctionTableName');
+    await database?.execute('DROP TABLE IF EXISTS $_itemsTableName');
+
+
     await database?.execute('''
     CREATE TABLE $_itemsTableName(
     $_itemColID INT PRIMARY KEY,
@@ -128,5 +145,16 @@ class DataBaseHelper {
     $_itemColDescription TEXT NOT NULL
     )
     ''');
+
+    await database?.execute('''
+    CREATE TABLE $_auctionTableName(
+    $_auctionColID INT NOT NULL,
+    $_auctionColMinBid INT NOT NULL,
+    $_auctionColStartPrice INT NOT NULL,
+    FOREIGN KEY($_auctionColID) REFERENCES $_itemsTableName($_itemColID)
+    )
+    ''');
   }
+
+
 }
