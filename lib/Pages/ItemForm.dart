@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mazadatkom/DBs/Auction_Model.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
-import 'package:mazadatkom/Pages/ItemWidget.dart';
+import 'package:mazadatkom/Pages/ItemTile.dart';
 
 class ItemFormPage extends StatefulWidget {
   const ItemFormPage({Key? key}) : super(key: key);
@@ -13,7 +13,7 @@ class ItemFormPage extends StatefulWidget {
 
 class _ItemFormPageState extends State<ItemFormPage> {
   Widget buildItemBox(BuildContext context) {
-    return const ItemBox(
+    return const ItemTile(
       color: Colors.white,
       itemName: '',
       description: '',

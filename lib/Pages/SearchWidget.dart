@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mazadatkom/Pages/AuctionPage.dart';
-import 'package:mazadatkom/Pages/ItemWidget.dart';
+import 'package:mazadatkom/Pages/ItemTile.dart';
 import 'package:mazadatkom/Pages/ItemForm.dart';
 
 class SearchWidget extends StatefulWidget {
@@ -18,6 +18,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //search widget within appbar
       appBar: AppBar(
         title: searchBar,
         centerTitle: true,
@@ -40,30 +41,26 @@ class _SearchWidgetState extends State<SearchWidget> {
           ),
         ],
       ),
+
+      //listview within the container
       body: Container(
         color: Colors.grey[300],
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
-              return ItemBox(
+              return ItemTile(
                 color: index.isOdd ? Colors.grey[300] : Colors.white,
                 itemName: 'Item ${index + 1}',
                 description: "This is item ${index + 1} ",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AuctionPage(),
-                    ),
-                  );
-                },
               );
             },
             itemCount: listItemsCount,
           ),
         ),
       ),
+
+      //floating action button to add items
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => ItemFormPage()));

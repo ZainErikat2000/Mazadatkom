@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AuctionPage extends StatelessWidget {
-  const AuctionPage({Key? key}) : super(key: key);
+  const AuctionPage({
+    Key? key,
+    required this.itemName,
+    required this.minBid,
+    required this.startPrice,
+  }) : super(key: key);
+  final String itemName;
+  final int? minBid;
+  final int? startPrice;
 
   @override
   Widget build(BuildContext context) {
