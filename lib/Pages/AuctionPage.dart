@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AuctionPage extends StatelessWidget {
-  const AuctionPage({
+class AuctionPage extends StatefulWidget {
+  AuctionPage({
     Key? key,
     required this.itemName,
     required this.minBid,
@@ -9,11 +9,24 @@ class AuctionPage extends StatelessWidget {
   }) : super(key: key);
   final String itemName;
   final int? minBid;
-  final int? startPrice;
+  int? startPrice;
+
+  @override
+  State<AuctionPage> createState() => _AuctionPageState();
+}
+
+class _AuctionPageState extends State<AuctionPage> {
+  final TextEditingController bidCompareCont = TextEditingController();
+  int? strtp;
+  int? minb;
 
   @override
   Widget build(BuildContext context) {
+
+    minb = widget.minBid;
+    strtp = widget.startPrice;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text(
@@ -38,9 +51,38 @@ class AuctionPage extends StatelessWidget {
             const SizedBox(
               child: Text("Item"),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Min Bid: ${widget.minBid}'),
+                const SizedBox(
+                  width: 8,
+                  height: 1,
+                ),
+              ],
+            ),
+            Text('current price: $strtp'),
+            Container(
+                width: 100,
+                child: TextFormField(
+                  controller: bidCompareCont,
+                  decoration: const InputDecoration(labelText: 'Bid'),
+                )),
             ElevatedButton(
               onPressed: () {
-                print("bidding");
+                //bidding main func
+                print("$strtp");
+                String bidtext = bidCompareCont.text;
+                if (bidtext == '') {
+                  print('no bid input');
+                } else {
+                  int? currentbid = int.parse(bidtext);
+                  print('${int.parse(minb.toString())}');
+                  if (currentbid > int.parse(minb.toString())) {
+                    setState(() => widget.startPrice = (strtp! + currentbid));
+                  }
+                }
+                print("$strtp");
               },
               child: const Text("Bid: "),
             ),

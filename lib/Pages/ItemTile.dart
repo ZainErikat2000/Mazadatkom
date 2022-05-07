@@ -1,5 +1,5 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-
 import 'AuctionPage.dart';
 
 class ItemTile extends StatelessWidget {
@@ -48,7 +48,13 @@ class ItemTile extends StatelessWidget {
     return Container(
       color: color,
       child: ListTile(
-        onTap: () => onPressed(context, itemName, minBid, startPrice),
+        onTap: () {
+          //REMOVE v
+          Random rnd = Random();
+          int? rndStart = rnd.nextInt(76) + 25;
+          int? rndMin = rnd.nextInt(11) + 3;
+          //REMOVE ^
+          onPressed(context, itemName, rndMin, rndStart);},
         title: Text(itemName),
         subtitle: Text(description),
         leading: Icon(
