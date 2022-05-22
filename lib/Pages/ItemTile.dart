@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:mazadatkom/DBs/Item_Model.dart';
 import 'AuctionPage.dart';
 
 class ItemTile extends StatelessWidget {
@@ -11,6 +12,7 @@ class ItemTile extends StatelessWidget {
     this.date,
     this.minBid,
     this.startPrice,
+    this.item
   }) : super(key: key);
 
   final String itemName;
@@ -19,6 +21,7 @@ class ItemTile extends StatelessWidget {
   final int? minBid;
   final String? date;
   final Color? color;
+  final Item? item;
   //declared a static void Function to build the auction page independently of each item tile
   static void Function(
     BuildContext context,

@@ -156,5 +156,18 @@ class DataBaseHelper {
     ''');
   }
 
+  Future<List<Item>> getItems() async{
+    final database = await instance.database;
+
+    List<Map<String, dynamic>>? items = await database?.query(_itemsTableName, orderBy: 'id DESC');
+
+    int length = items?.length ?? 0;
+
+    return List.generate(length,
+            (i) => Item(id: items![i][_itemColID],
+                name: items[i][_itemColName],
+                description: items[i][_itemColDescription],));
+  }
+
 
 }

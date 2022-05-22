@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mazadatkom/Custom_Widgets/ItemsList.dart';
+import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/Pages/AuctionPage.dart';
 import 'package:mazadatkom/Pages/ItemTile.dart';
 import 'package:mazadatkom/Pages/ItemForm.dart';
@@ -12,6 +14,7 @@ class SearchWidget extends StatefulWidget {
 
 class _SearchWidgetState extends State<SearchWidget> {
   Icon searchIcon = const Icon(Icons.search);
+  Icon refreshIcon = const Icon(Icons.refresh);
   Widget searchBar = const Text("Search");
   int listItemsCount = 5;
 
@@ -22,7 +25,7 @@ class _SearchWidgetState extends State<SearchWidget> {
       appBar: AppBar(
         title: searchBar,
         centerTitle: true,
-        actions: <Widget>[
+        actions: <Widget>[IconButton(onPressed:() {setSate(){}}, icon: refreshIcon),
           IconButton(
             onPressed: () {
               setState(() {
@@ -45,19 +48,7 @@ class _SearchWidgetState extends State<SearchWidget> {
       //listview within the container
       body: Container(
         color: Colors.grey[300],
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return ItemTile(
-                color: index.isOdd ? Colors.grey[300] : Colors.white,
-                itemName: 'Item ${index + 1}',
-                description: "This is item ${index + 1} ",
-              );
-            },
-            itemCount: listItemsCount,
-          ),
-        ),
+        child: ItemsList(),
       ),
 
       //floating action button to add items
