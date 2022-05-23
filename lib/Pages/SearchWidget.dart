@@ -4,6 +4,7 @@ import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/Pages/AuctionPage.dart';
 import 'package:mazadatkom/Pages/ItemTile.dart';
 import 'package:mazadatkom/Pages/ItemForm.dart';
+import 'package:mazadatkom/Pages/SearchResultsPage.dart';
 
 class SearchWidget extends StatefulWidget {
   const SearchWidget({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class SearchWidget extends StatefulWidget {
 }
 
 class _SearchWidgetState extends State<SearchWidget> {
+  TextEditingController searchController = TextEditingController();
   Icon searchIcon = const Icon(Icons.search);
   Icon refreshIcon = const Icon(Icons.refresh);
   Widget searchBar = const Text("Search");
@@ -25,14 +27,24 @@ class _SearchWidgetState extends State<SearchWidget> {
       appBar: AppBar(
         title: searchBar,
         centerTitle: true,
-        actions: <Widget>[IconButton(onPressed:() {setSate(){}}, icon: refreshIcon),
+        actions: <Widget>[
+          IconButton(
+              onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SearchResultsPage(
+                                searchterm: searchController.text,
+                              )));
+              },
+              icon: refreshIcon),
           IconButton(
             onPressed: () {
               setState(() {
                 if (searchIcon.icon == Icons.search) {
                   searchIcon = const Icon(Icons.cancel);
-                  searchBar = const TextField(
-                    decoration: InputDecoration(hintText: "Enter query"),
+                  searchBar = TextField(controller: searchController,
+                    decoration: InputDecoration(hintText: "Enter query",),
                   );
                 } else {
                   searchIcon = const Icon(Icons.search);
@@ -54,7 +66,8 @@ class _SearchWidgetState extends State<SearchWidget> {
       //floating action button to add items
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ItemFormPage()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ItemFormPage()));
         },
         tooltip: 'increment',
         child: const Icon(Icons.add),

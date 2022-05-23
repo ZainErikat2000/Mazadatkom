@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:mazadatkom/DBs/DataBaseHelper.dart';
-import 'package:mazadatkom/Pages/ItemTile.dart';
 
-class ItemsList extends StatelessWidget {
-  const ItemsList({Key? key}) : super(key: key);
+import '../DBs/DataBaseHelper.dart';
+import 'ItemTile.dart';
+
+class SearchResultsPage extends StatelessWidget {
+  const SearchResultsPage({Key? key, required this.searchterm}) : super(key: key);
+  final String? searchterm;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: FutureBuilder(
+    return Scaffold(
+      body: FutureBuilder(
         key: key,
-        future: DataBaseHelper.instance.getItems(),
+        future: DataBaseHelper.instance.searchForItems(searchTerm: searchterm ?? ''),
         initialData: const [],
         builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           var data = snapshot.data;
@@ -18,7 +20,7 @@ class ItemsList extends StatelessWidget {
 
           return dataLength == 0
               ? Center(
-                  child: Text('Fetching Data'),
+                  child: Text('no data found'),
                 )
               : ListView.builder(
                   itemCount: dataLength,

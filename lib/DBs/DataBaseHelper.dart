@@ -169,5 +169,18 @@ class DataBaseHelper {
                 description: items[i][_itemColDescription],));
   }
 
+  Future<List<Item>> searchForItems({String searchTerm = ''}) async{
+    final database = await instance.database;
+
+    List<Map<String, dynamic>>? items = await database?.query(_itemsTableName, where: '$_itemColName LIKE ?',whereArgs: ['%$searchTerm%']);
+
+    int length = items?.length ?? 0;
+
+    return List.generate(length,
+            (i) => Item(id: items![i][_itemColID],
+          name: items[i][_itemColName],
+          description: items[i][_itemColDescription],));
+  }
+
 
 }
