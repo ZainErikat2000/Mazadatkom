@@ -23,7 +23,8 @@ class _SignInMainState extends State<SignInMain> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(50),
+        padding: EdgeInsets.only(left: 50, right: 50,
+          bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

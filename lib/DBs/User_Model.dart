@@ -1,8 +1,8 @@
 class User {
   late final int id;
-  late final int name;
-  late final int email;
-  late final int password;
+  late final String name;
+  late final String email;
+  late final String password;
 
   User({
     required this.id,

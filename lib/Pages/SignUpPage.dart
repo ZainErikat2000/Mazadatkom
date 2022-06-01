@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mazadatkom/DBs/DataBaseHelper.dart';
+
+import '../DBs/User_Model.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -8,17 +11,25 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  //name and email controllers
   TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+
+  //password check controllers
   TextEditingController passController = TextEditingController();
   TextEditingController passRepeatController = TextEditingController();
-  String passNotify = '';
+
+  String credNotify = '';
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(resizeToAvoidBottomInset: false,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(),
       body: Padding(
         padding: EdgeInsets.only(
+            left: 50,
+            right: 50,
             bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Center(
           child: Column(
@@ -39,7 +50,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   icon: Icon(Icons.person),
                 ),
               ),
-            SizedBox(height: 16,),
+              TextFormField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  hintText: 'User Name',
+                  icon: Icon(Icons.email),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
               TextFormField(
                 controller: passController,
                 decoration: const InputDecoration(
@@ -50,25 +70,65 @@ class _SignUpPageState extends State<SignUpPage> {
                 decoration: const InputDecoration(
                     hintText: 'Repeat Password', icon: Icon(Icons.key)),
               ),
-            const SizedBox(height: 8,),
-            Text(passNotify,style: TextStyle(color: Colors.redAccent),),
-            const SizedBox(height: 8,),
+              const SizedBox(
+                height: 16,
+              ),
+              Text(
+                credNotify,
+                style: TextStyle(color: Colors.redAccent),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
               //sign up functionality
-              ElevatedButton(onPressed: () {
-                if(passRepeatController.text != passController.text)
-                {
-                  setState(() {
-                    passNotify = "password doesn't match";
-                  });
-                  return;
-                }
+              ElevatedButton(
+                onPressed: () async {
+                  String pass = passController.text;
+                  String passRe = passRepeatController.text;
 
-              setState(() {
-                  passNotify = '';
-                });
-                //add user to database
-              },
-                  child: Text('Sign Up'),),
+                  String name = nameController.text;
+                  String email = emailController.text;
+
+                  //all fields check
+                  if (name == '' || email == '' || pass == '' || passRe == '') {
+                    setState(() {
+                      credNotify = "must fill all fields";
+                    });
+                    return;
+                  }
+
+                  //name and email check
+                  if (name.contains(" ") || email.contains(" ")) {
+                    setState(() {
+                      credNotify =
+                          "user name and email mustn't contain whitespace";
+                    });
+                    return;
+                  }
+
+                  //desired password match check
+                  if (passRe != pass) {
+                    setState(() {
+                      credNotify = "password doesn't match";
+                    });
+                    return;
+                  }
+
+                  setState(() {
+                    credNotify = '';
+                  });
+                  //add user to database
+
+                  int numUsers =
+                      await DataBaseHelper.instance.getUsersCount() ?? 0;
+
+                  User user = User(
+                      id: numUsers, name: name, email: email, password: pass);
+
+                  await DataBaseHelper.instance.insertUser(user);
+                },
+                child: const Text('Sign Up'),
+              ),
             ],
           ),
         ),
