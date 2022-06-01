@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mazadatkom/Pages/SignInPage.dart';
 import 'package:mazadatkom/Pages/Sign_in_Page.dart';
 
 class AuthWrapper extends StatefulWidget {
@@ -11,6 +12,6 @@ class AuthWrapper extends StatefulWidget {
 class _AuthWrapperState extends State<AuthWrapper> {
   @override
   Widget build(BuildContext context) {
-    return const SignInPage();
+    return const SignInMain();
   }
 }

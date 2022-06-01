@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:mazadatkom/DBs/Auction_Model.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
+import 'package:mazadatkom/DBs/User_Model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -20,6 +21,13 @@ class DataBaseHelper {
   static const _auctionColID = 'id';
   static const _auctionColStartPrice = 'start_price';
   static const _auctionColMinBid = 'min_bid';
+
+  //User table variables
+  static const _userTableName = 'Users';
+  static const _userColID = 'id';
+  static const _userColName = 'name';
+  static const _userColEmail = 'email';
+  static const _userColPass = 'pass';
 
   //singleton
   DataBaseHelper._constructDB();
@@ -69,6 +77,15 @@ class DataBaseHelper {
     FOREIGN KEY($_auctionColID) REFERENCES $_itemsTableName($_itemColID)
     )
     ''');
+
+    await database.execute('''
+    CREATE TABLE $_userTableName(
+    $_userColID INT NOT NULL,
+    $_userColName TEXT NOT NULL,
+    $_userColEmail TEXT NOT NULL,
+    $_userColPass TEXT NOT NULL
+    )
+    ''');
   }
 
   //Allow foreign keys
@@ -76,7 +93,7 @@ class DataBaseHelper {
     await database.execute('PRAGMA foreign_keys = ON');
   }
 
-  //Update or insert item to items table
+  //items table operations
   Future<void> insertItem(Item item) async {
     Database? database = await instance.database;
     await database?.insert(_itemsTableName, item.toMap(),
@@ -95,6 +112,7 @@ class DataBaseHelper {
     return result?.length;
   }
 
+  //auctions table operations
   Future<void> insertAuction(Auction auction) async {
     Database? database = await instance.database;
 
@@ -120,6 +138,26 @@ class DataBaseHelper {
     });
   }
 
+  //users table operations
+  Future<void> insertUser(User user) async {
+    Database? database = await instance.database;
+    await database?.insert(_userTableName, user.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> updateUser(User user) async {
+    Database? database = await instance.database;
+    await database?.update(_userTableName, user.toMap(),
+        where: 'id = ?', whereArgs: [user.id]);
+  }
+
+  Future<int?> getUsersCount()async{
+    Database? database = await instance.database;
+    List<Map>? result = await database?.query(_userTableName);
+    return result?.length;
+  }
+
+  //other operations
   Future<void> printAuctions() async {
     Database? database = await instance.database;
 
@@ -156,6 +194,7 @@ class DataBaseHelper {
     ''');
   }
 
+  //listview related operations
   Future<List<Item>> getItems() async{
     final database = await instance.database;
 
