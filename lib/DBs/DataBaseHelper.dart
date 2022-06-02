@@ -62,7 +62,7 @@ class DataBaseHelper {
     //Create items table
     await database.execute('''
     CREATE TABLE $_itemsTableName(
-    $_itemColID INT PRIMARY KEY AUTOINCREMENT NOT NULL,
+    $_itemColID INT PRIMARY KEY NOT NULL,
     $_itemColName TEXT NOT NULL,
     $_itemColDescription TEXT NOT NULL
     )
@@ -157,6 +157,60 @@ class DataBaseHelper {
     return result?.length;
   }
 
+  Future<bool> validateSignUp(String? name, String? email) async{
+    Database? database = await instance.database;
+
+    //check if name is in use
+    List<Map> nameResult = await database?.query(_userTableName, where: '$_userColName = ?',whereArgs: [name]) ?? List.filled(0,
+        {});
+    if(!nameResult.isEmpty){
+      return false;
+    }
+
+
+    //check if email is in use
+    print('email exists');
+    List<Map> emailResult = await database?.query(_userTableName, where: '$_userColEmail = ?',whereArgs: [email]) ?? List.filled(0,
+    {});
+    if(!emailResult.isEmpty){
+      return false;
+    }
+
+    //complete normally
+    return true;
+  }
+
+  Future<bool> validateSignIn(String name, String pass) async{
+    Database? database = await instance.database;
+
+    //check if name is in use
+    List<Map>? nameResult = await database?.query(_userTableName, where: '$_userColName = ?',whereArgs: [name]);
+    if(nameResult == null){
+      return false;
+    }
+
+    //check if email is in use
+    List<Map>? passResult = await database?.query(_userTableName, where: '$_userColPass = ?',whereArgs: [pass]);
+    if(pass != passResult![0][_userColPass]){
+      return false;
+    }
+
+    //complete normally
+    return true;
+  }
+
+  Future<void> printUsers() async {
+    Database? database = await instance.database;
+
+    print('printing users');
+    //prints table rows
+    (await database?.query(_userTableName,
+        columns: [_userColID,_userColName, _userColEmail,_userColPass]))
+        ?.forEach((row) {
+      print(row);
+    });
+  }
+
   //other operations
   Future<void> printAuctions() async {
     Database? database = await instance.database;
@@ -218,8 +272,9 @@ class DataBaseHelper {
     return List.generate(length,
             (i) => Item(id: items![i][_itemColID],
           name: items[i][_itemColName],
-          description: items[i][_itemColDescription],));
+          description: items[i][_itemColDescription],),);
   }
 
 
+  //other operations
 }
