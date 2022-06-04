@@ -106,7 +106,7 @@ class DataBaseHelper {
         where: 'id = ?', whereArgs: [item.id]);
   }
 
-  Future<int?> getItemsCount()async{
+  Future<int?> getItemsCount() async {
     Database? database = await instance.database;
     List<Map>? result = await database?.query(_itemsTableName);
     return result?.length;
@@ -132,7 +132,7 @@ class DataBaseHelper {
 
     //prints table rows
     (await database?.query(_itemsTableName,
-            columns: [_itemColID,_itemColName, _itemColDescription]))
+            columns: [_itemColID, _itemColName, _itemColDescription]))
         ?.forEach((row) {
       print(row);
     });
@@ -151,28 +151,29 @@ class DataBaseHelper {
         where: 'id = ?', whereArgs: [user.id]);
   }
 
-  Future<int?> getUsersCount()async{
+  Future<int?> getUsersCount() async {
     Database? database = await instance.database;
     List<Map>? result = await database?.query(_userTableName);
     return result?.length;
   }
 
-  Future<bool> validateSignUp(String? name, String? email) async{
+  Future<bool> validateSignUp(String? name, String? email) async {
     Database? database = await instance.database;
 
     //check if name is in use
-    List<Map> nameResult = await database?.query(_userTableName, where: '$_userColName = ?',whereArgs: [name]) ?? List.filled(0,
-        {});
-    if(!nameResult.isEmpty){
+    List<Map> nameResult = await database?.query(_userTableName,
+            where: '$_userColName = ?', whereArgs: [name]) ??
+        List.filled(0, {});
+    if (nameResult.isNotEmpty) {
       return false;
     }
 
-
     //check if email is in use
     print('email exists');
-    List<Map> emailResult = await database?.query(_userTableName, where: '$_userColEmail = ?',whereArgs: [email]) ?? List.filled(0,
-    {});
-    if(!emailResult.isEmpty){
+    List<Map> emailResult = await database?.query(_userTableName,
+            where: '$_userColEmail = ?', whereArgs: [email]) ??
+        List.filled(0, {});
+    if (emailResult.isNotEmpty) {
       return false;
     }
 
@@ -180,22 +181,27 @@ class DataBaseHelper {
     return true;
   }
 
-  Future<bool> validateSignIn(String name, String pass) async{
+  Future<bool> validateSignIn(String name, String pass) async {
     Database? database = await instance.database;
 
     //check if name is in use
-    List<Map>? nameResult = await database?.query(_userTableName, where: '$_userColName = ?',whereArgs: [name]);
-    if(nameResult == null){
+    List<Map> nameResult = await database?.query(_userTableName,
+            where: '$_userColName = ?', whereArgs: [name]) ??
+        List.filled(0, {});
+    if (nameResult.isEmpty) {
+      print("user doesn't exist");
       return false;
     }
+    //check password
+    String realPass = nameResult[0][_userColPass] ?? '';
 
-    //check if email is in use
-    List<Map>? passResult = await database?.query(_userTableName, where: '$_userColPass = ?',whereArgs: [pass]);
-    if(pass != passResult![0][_userColPass]){
+    if (pass != realPass) {
+      print('wrong pass');
       return false;
     }
 
     //complete normally
+    print("you signed in");
     return true;
   }
 
@@ -205,7 +211,7 @@ class DataBaseHelper {
     print('printing users');
     //prints table rows
     (await database?.query(_userTableName,
-        columns: [_userColID,_userColName, _userColEmail,_userColPass]))
+            columns: [_userColID, _userColName, _userColEmail, _userColPass]))
         ?.forEach((row) {
       print(row);
     });
@@ -217,18 +223,17 @@ class DataBaseHelper {
 
     //prints table rows
     (await database?.query(_auctionTableName,
-        columns: [_auctionColID,_auctionColStartPrice, _auctionColMinBid]))
+            columns: [_auctionColID, _auctionColStartPrice, _auctionColMinBid]))
         ?.forEach((row) {
       print(row);
     });
   }
 
-  Future<void> clearTables() async{
+  Future<void> clearTables() async {
     //NO BETTER WAY OF CLEARING THE TABLE
     Database? database = await instance.database;
     await database?.execute('DROP TABLE IF EXISTS $_auctionTableName');
     await database?.execute('DROP TABLE IF EXISTS $_itemsTableName');
-
 
     await database?.execute('''
     CREATE TABLE $_itemsTableName(
@@ -249,32 +254,40 @@ class DataBaseHelper {
   }
 
   //listview related operations
-  Future<List<Item>> getItems() async{
+  Future<List<Item>> getItems() async {
     final database = await instance.database;
 
-    List<Map<String, dynamic>>? items = await database?.query(_itemsTableName, orderBy: 'id DESC');
+    List<Map<String, dynamic>>? items =
+        await database?.query(_itemsTableName, orderBy: 'id DESC');
 
     int length = items?.length ?? 0;
 
-    return List.generate(length,
-            (i) => Item(id: items![i][_itemColID],
-                name: items[i][_itemColName],
-                description: items[i][_itemColDescription],));
+    return List.generate(
+        length,
+        (i) => Item(
+              id: items![i][_itemColID],
+              name: items[i][_itemColName],
+              description: items[i][_itemColDescription],
+            ));
   }
 
-  Future<List<Item>> searchForItems({String searchTerm = ''}) async{
+  Future<List<Item>> searchForItems({String searchTerm = ''}) async {
     final database = await instance.database;
 
-    List<Map<String, dynamic>>? items = await database?.query(_itemsTableName, where: '$_itemColName LIKE ?',whereArgs: ['%$searchTerm%']);
+    List<Map<String, dynamic>>? items = await database?.query(_itemsTableName,
+        where: '$_itemColName LIKE ?', whereArgs: ['%$searchTerm%']);
 
     int length = items?.length ?? 0;
 
-    return List.generate(length,
-            (i) => Item(id: items![i][_itemColID],
-          name: items[i][_itemColName],
-          description: items[i][_itemColDescription],),);
+    return List.generate(
+      length,
+      (i) => Item(
+        id: items![i][_itemColID],
+        name: items[i][_itemColName],
+        description: items[i][_itemColDescription],
+      ),
+    );
   }
-
 
   //other operations
 }

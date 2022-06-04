@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/Pages/SignUpPage.dart';
 
 class SignInMain extends StatefulWidget {
@@ -12,6 +13,8 @@ class _SignInMainState extends State<SignInMain> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passController = TextEditingController();
 
+  String checkNotify = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,8 +26,10 @@ class _SignInMainState extends State<SignInMain> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: EdgeInsets.only(left: 50, right: 50,
-          bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding: EdgeInsets.only(
+            left: 50,
+            right: 50,
+            bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -46,8 +51,27 @@ class _SignInMainState extends State<SignInMain> {
                 controller: passController,
                 decoration: const InputDecoration(
                     hintText: 'Password', icon: Icon(Icons.key)),
+                obscureText: true,
               ),
-              ElevatedButton(onPressed: () {}, child: Text('Sign In')),
+              Text(
+                checkNotify,
+                style: const TextStyle(color: Colors.redAccent),
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    String name = nameController.text;
+                    String pass = passController.text;
+
+                    bool signInCheck = await DataBaseHelper.instance
+                        .validateSignIn(name, pass);
+
+                    if (!signInCheck) {
+                      setState(() {
+                        checkNotify = "username or password don't exist";
+                      });
+                    }
+                  },
+                  child: const Text('Sign In')),
               const SizedBox(
                 height: 8,
               ),

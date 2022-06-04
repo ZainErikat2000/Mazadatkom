@@ -64,18 +64,20 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: passController,
                 decoration: const InputDecoration(
                     hintText: 'Password', icon: Icon(Icons.key)),
+                obscureText: true,
               ),
               TextFormField(
                 controller: passRepeatController,
                 decoration: const InputDecoration(
                     hintText: 'Repeat Password', icon: Icon(Icons.key)),
+                obscureText: true,
               ),
               const SizedBox(
                 height: 16,
               ),
               Text(
                 credNotify,
-                style: TextStyle(color: Colors.redAccent),
+                style: const TextStyle(color: Colors.redAccent),
               ),
               const SizedBox(
                 height: 16,
@@ -118,29 +120,37 @@ class _SignUpPageState extends State<SignUpPage> {
                     credNotify = '';
                   });
                   //add user to database
-                  var valSignUp = await DataBaseHelper.instance.validateSignUp(name, email);
+                  var valSignUp =
+                      await DataBaseHelper.instance.validateSignUp(name, email);
 
-                  if(valSignUp == false)
-                    {
-                      setState(() {
-                        credNotify = 'user name or email already exists';
-                      });
+                  if (valSignUp == false) {
+                    setState(() {
+                      credNotify = 'user name or email already exists';
+                    });
 
-                      return;
-                    }
+                    return;
+                  }
 
                   int numUsers =
                       await DataBaseHelper.instance.getUsersCount() ?? 0;
 
                   User user = User(
-                      id: numUsers + 1, name: name, email: email, password: pass);
+                      id: numUsers + 1,
+                      name: name,
+                      email: email,
+                      password: pass);
 
                   await DataBaseHelper.instance.insertUser(user);
                   await DataBaseHelper.instance.printUsers();
                 },
                 child: const Text('Sign Up'),
               ),
-              ElevatedButton(onPressed: () async {await DataBaseHelper.instance.printUsers();}, child: Text('hello'),)
+              ElevatedButton(
+                onPressed: () async {
+                  await DataBaseHelper.instance.printUsers();
+                },
+                child: Text('hello'),
+              )
             ],
           ),
         ),
