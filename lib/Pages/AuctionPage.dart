@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../DBs/Item_Model.dart';
+
 class AuctionPage extends StatefulWidget {
   AuctionPage({
     Key? key,
-    required this.itemName,
+    this.itemName,
     required this.minBid,
     required this.startPrice,
+    required this.item
   }) : super(key: key);
-  final String itemName;
+  final String? itemName;
+  final Item? item;
   final int? minBid;
   int? startPrice;
 
@@ -48,8 +52,8 @@ class _AuctionPageState extends State<AuctionPage> {
                 ),
               ),
             ),
-            const SizedBox(
-              child: Text("Item"),
+             SizedBox(
+              child: Text("${widget.item?.name}"),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

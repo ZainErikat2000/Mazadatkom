@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:mazadatkom/DBs/Auction_Model.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
+import 'package:mazadatkom/DBs/UserItem_Model.dart';
 import 'package:mazadatkom/DBs/User_Model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -28,6 +29,11 @@ class DataBaseHelper {
   static const _userColName = 'name';
   static const _userColEmail = 'email';
   static const _userColPass = 'pass';
+
+  //User's Items Table
+  static const _userItemTableName = 'UsersItems';
+  static const _userItemColUserID = 'user_id';
+  static const _userItemColItemID = 'item_id';
 
   //singleton
   DataBaseHelper._constructDB();
@@ -86,6 +92,16 @@ class DataBaseHelper {
     $_userColPass TEXT NOT NULL
     )
     ''');
+
+    await database.execute('''
+    CREATE TABLE $_userItemTableName(
+    $_userColID INT NOT NULL,
+    $_userItemColUserID TEXT NOT NULL,
+    $_userItemColItemID TEXT NOT NULL,
+    FOREIGN KEY($_userItemColUserID) REFERENCES $_userTableName($_userColID),
+    FOREIGN KEY($_userItemColItemID) REFERENCES $_itemsTableName($_itemColID)
+    )
+    ''');
   }
 
   //Allow foreign keys
@@ -94,6 +110,20 @@ class DataBaseHelper {
   }
 
   //items table operations
+  Future<Item> getItem(int id) async {
+    Database? database = await DataBaseHelper.instance.database;
+
+    List<Map<String, dynamic>> result = await database?.query(
+          _itemsTableName,
+          where: '$_itemColID = ?',
+          whereArgs: [id],
+        ) ??
+        List.filled(0, {});
+    Item item = Item.fromMap(result[0]);
+
+    return item;
+  }
+
   Future<void> insertItem(Item item) async {
     Database? database = await instance.database;
     await database?.insert(_itemsTableName, item.toMap(),
@@ -113,6 +143,20 @@ class DataBaseHelper {
   }
 
   //auctions table operations
+  Future<Auction> getAuction(int id) async {
+    Database? database = await DataBaseHelper.instance.database;
+
+    List<Map<String, dynamic>> result = await database?.query(
+      _auctionTableName,
+      where: '$_auctionColID = ?',
+      whereArgs: [id],
+    ) ??
+        List.filled(0, {});
+    Auction auction = Auction.fromMap(result[0]);
+
+    return auction;
+  }
+
   Future<void> insertAuction(Auction auction) async {
     Database? database = await instance.database;
 
@@ -215,6 +259,39 @@ class DataBaseHelper {
         ?.forEach((row) {
       print(row);
     });
+  }
+
+  //items users table operations
+  Future<void> insertUserItem(UserItem userItem) async {
+    Database? database = await instance.database;
+    await database?.insert(_userItemTableName, userItem.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> updateUserItem(UserItem userItem) async {
+    Database? database = await instance.database;
+    await database?.update(_userItemTableName, userItem.toMap(),
+        where: '$_userItemColUserID = ?', whereArgs: [userItem.userID]);
+  }
+
+  Future<List<UserItem>> getUserItems({int? userID}) async {
+    Database? database = await DataBaseHelper.instance.database;
+
+    List<Map<String, dynamic>> queryResult = await database?.query(
+            _userItemTableName,
+            where: '$_userItemColUserID = ?',
+            whereArgs: [userID]) ??
+        List<Map<String, dynamic>>.filled(0, {});
+
+    int length = queryResult.length;
+
+    return List.generate(
+      length,
+      (i) => UserItem(
+        itemID: queryResult[i][_userItemColItemID],
+        userID: queryResult[i][_userItemColUserID],
+      ),
+    );
   }
 
   //other operations

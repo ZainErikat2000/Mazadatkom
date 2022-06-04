@@ -1,21 +1,23 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
+import '../DBs/Auction_Model.dart';
 import 'AuctionPage.dart';
 
 class ItemTile extends StatelessWidget {
-  const ItemTile({
-    Key? key,
-    required this.color,
-    required this.itemName,
-    required this.description,
-    this.date,
-    this.minBid,
-    this.startPrice,
-    this.item
-  }) : super(key: key);
+  const ItemTile(
+      {Key? key,
+      required this.color,
+      this.itemName,
+      required this.description,
+      this.date,
+      this.minBid,
+      this.startPrice,
+      required this.item})
+      : super(key: key);
 
-  final String itemName;
+  final String? itemName;
   final String description;
   final int? startPrice;
   final int? minBid;
@@ -25,22 +27,17 @@ class ItemTile extends StatelessWidget {
   //declared a static void Function to build the auction page independently of each item tile
   static void Function(
     BuildContext context,
-    String name,
     int? mb,
     int? sp,
-  ) onPressed = (
-    BuildContext context,
-    String name,
-    int? mb,
-    int? sp,
-  ) {
+    Item it,
+  ) onPressed = (BuildContext context, int? mb, int? sp, Item it) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AuctionPage(
-          itemName: name,
           minBid: mb,
           startPrice: sp,
+          item: it,
         ),
       ),
     );
@@ -51,16 +48,17 @@ class ItemTile extends StatelessWidget {
     return Container(
       color: color,
       child: ListTile(
-        onTap: () {
-          //REMOVE v
-          Random rnd = Random();
-          int? rndStart = rnd.nextInt(76) + 25;
-          int? rndMin = rnd.nextInt(11) + 3;
-          //REMOVE ^
-          onPressed(context, itemName, rndMin, rndStart);},
-        title: Text(itemName),
+        onTap: () async {
+          Auction auction =
+              await DataBaseHelper.instance.getAuction(item?.id ?? 0);
+          int min = auction.minBid;
+          int startPrice = auction.startPrice;
+
+          onPressed(context, min, startPrice, item!);
+        },
+        title: Text(item?.name ?? ''),
         subtitle: Text(description),
-        leading: Icon(
+        leading: const Icon(
           Icons.adjust,
         ),
       ),

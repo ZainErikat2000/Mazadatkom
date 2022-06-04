@@ -32,126 +32,132 @@ class _SignUpPageState extends State<SignUpPage> {
             right: 50,
             bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'Sign Up',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  hintText: 'User Name',
-                  icon: Icon(Icons.person),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text(
+                  'Sign Up',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
-              ),
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  hintText: 'User Name',
-                  icon: Icon(Icons.email),
+                const SizedBox(
+                  height: 8,
                 ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                controller: passController,
-                decoration: const InputDecoration(
-                    hintText: 'Password', icon: Icon(Icons.key)),
-                obscureText: true,
-              ),
-              TextFormField(
-                controller: passRepeatController,
-                decoration: const InputDecoration(
-                    hintText: 'Repeat Password', icon: Icon(Icons.key)),
-                obscureText: true,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Text(
-                credNotify,
-                style: const TextStyle(color: Colors.redAccent),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              //sign up functionality
-              ElevatedButton(
-                onPressed: () async {
-                  String pass = passController.text;
-                  String passRe = passRepeatController.text;
+                TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    hintText: 'User Name',
+                    icon: Icon(Icons.person),
+                  ),
+                ),
+                TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    hintText: 'User Name',
+                    icon: Icon(Icons.email),
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                TextFormField(
+                  controller: passController,
+                  decoration: const InputDecoration(
+                      hintText: 'Password', icon: Icon(Icons.key)),
+                  obscureText: true,
+                ),
+                TextFormField(
+                  controller: passRepeatController,
+                  decoration: const InputDecoration(
+                      hintText: 'Repeat Password', icon: Icon(Icons.key)),
+                  obscureText: true,
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  credNotify,
+                  style: const TextStyle(color: Colors.redAccent),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                //sign up functionality
+                ElevatedButton(
+                  onPressed: () async {
+                    String pass = passController.text;
+                    String passRe = passRepeatController.text;
 
-                  String name = nameController.text;
-                  String email = emailController.text;
+                    String name = nameController.text;
+                    String email = emailController.text;
 
-                  //all fields check
-                  if (name == '' || email == '' || pass == '' || passRe == '') {
+                    //all fields check
+                    if (name == '' ||
+                        email == '' ||
+                        pass == '' ||
+                        passRe == '') {
+                      setState(() {
+                        credNotify = "must fill all fields";
+                      });
+                      return;
+                    }
+
+                    //name and email check
+                    if (name.contains(" ") || email.contains(" ")) {
+                      setState(() {
+                        credNotify =
+                            "user name and email mustn't contain whitespace";
+                      });
+                      return;
+                    }
+
+                    //desired password match check
+                    if (passRe != pass) {
+                      setState(() {
+                        credNotify = "password doesn't match";
+                      });
+                      return;
+                    }
+
                     setState(() {
-                      credNotify = "must fill all fields";
+                      credNotify = '';
                     });
-                    return;
-                  }
+                    //add user to database
+                    var valSignUp = await DataBaseHelper.instance
+                        .validateSignUp(name, email);
 
-                  //name and email check
-                  if (name.contains(" ") || email.contains(" ")) {
-                    setState(() {
-                      credNotify =
-                          "user name and email mustn't contain whitespace";
-                    });
-                    return;
-                  }
+                    if (valSignUp == false) {
+                      setState(() {
+                        credNotify = 'user name or email already exists';
+                      });
 
-                  //desired password match check
-                  if (passRe != pass) {
-                    setState(() {
-                      credNotify = "password doesn't match";
-                    });
-                    return;
-                  }
+                      return;
+                    }
 
-                  setState(() {
-                    credNotify = '';
-                  });
-                  //add user to database
-                  var valSignUp =
-                      await DataBaseHelper.instance.validateSignUp(name, email);
+                    int numUsers =
+                        await DataBaseHelper.instance.getUsersCount() ?? 0;
 
-                  if (valSignUp == false) {
-                    setState(() {
-                      credNotify = 'user name or email already exists';
-                    });
+                    User user = User(
+                        id: numUsers + 1,
+                        name: name,
+                        email: email,
+                        password: pass);
 
-                    return;
-                  }
-
-                  int numUsers =
-                      await DataBaseHelper.instance.getUsersCount() ?? 0;
-
-                  User user = User(
-                      id: numUsers + 1,
-                      name: name,
-                      email: email,
-                      password: pass);
-
-                  await DataBaseHelper.instance.insertUser(user);
-                  await DataBaseHelper.instance.printUsers();
-                },
-                child: const Text('Sign Up'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  await DataBaseHelper.instance.printUsers();
-                },
-                child: Text('hello'),
-              )
-            ],
+                    await DataBaseHelper.instance.insertUser(user);
+                    await DataBaseHelper.instance.printUsers();
+                  },
+                  child: const Text('Sign Up'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await DataBaseHelper.instance.printUsers();
+                  },
+                  child: Text('hello'),
+                )
+              ],
+            ),
           ),
         ),
       ),

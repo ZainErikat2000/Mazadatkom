@@ -26,7 +26,7 @@ class SearchResultsPage extends StatelessWidget {
                   itemCount: dataLength,
                   itemBuilder: (context, i) => ItemTile(
                       color: i.isOdd ? Colors.redAccent : Colors.greenAccent,
-                      itemName: data[i].name,
+                      item: data[i],
                       description: data[i].description),
                 );
         },

@@ -13,13 +13,14 @@ class ItemFormPage extends StatefulWidget {
 
 class _ItemFormPageState extends State<ItemFormPage> {
   Widget buildItemBox(BuildContext context) {
-    return const ItemTile(
+    return ItemTile(
       color: Colors.white,
       itemName: '',
       description: '',
       date: '',
       minBid: 1,
       startPrice: 1,
+      item: Item(id: 1,name: '',description: ''),
     );
   }
 

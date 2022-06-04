@@ -31,33 +31,35 @@ class _SignInMainState extends State<SignInMain> {
             right: 50,
             bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'Sign In',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                    hintText: 'User Name', icon: Icon(Icons.person)),
-              ),
-              TextFormField(
-                controller: passController,
-                decoration: const InputDecoration(
-                    hintText: 'Password', icon: Icon(Icons.key)),
-                obscureText: true,
-              ),
-              Text(
-                checkNotify,
-                style: const TextStyle(color: Colors.redAccent),
-              ),
-              ElevatedButton(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text(
+                  'Sign In',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                      hintText: 'User Name', icon: Icon(Icons.person)),
+                ),
+                TextFormField(
+                  controller: passController,
+                  decoration: const InputDecoration(
+                      hintText: 'Password', icon: Icon(Icons.key)),
+                  obscureText: true,
+                ),
+                Text(
+                  checkNotify,
+                  style: const TextStyle(color: Colors.redAccent),
+                ),
+                ElevatedButton(
                   onPressed: () async {
                     String name = nameController.text;
                     String pass = passController.text;
@@ -71,16 +73,17 @@ class _SignInMainState extends State<SignInMain> {
                       });
                     }
                   },
-                  child: const Text('Sign In')),
-              const SizedBox(
-                height: 8,
-              ),
-              const Text(
-                "Don't have an account?",
-                style: TextStyle(color: Colors.black),
-                textAlign: TextAlign.center,
-              ),
-              ElevatedButton(
+                  child: const Text('Sign In'),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                const Text(
+                  "Don't have an account?",
+                  style: TextStyle(color: Colors.black),
+                  textAlign: TextAlign.center,
+                ),
+                ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -89,8 +92,10 @@ class _SignInMainState extends State<SignInMain> {
                       ),
                     );
                   },
-                  child: Text('Sign Up')),
-            ],
+                  child: const Text('Sign Up'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
