@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
+import 'package:mazadatkom/Pages/SearchWidget.dart';
 import 'package:mazadatkom/Pages/SignUpPage.dart';
+
+import '../DBs/User_Model.dart';
 
 class SignInMain extends StatefulWidget {
   const SignInMain({Key? key}) : super(key: key);
@@ -72,6 +75,10 @@ class _SignInMainState extends State<SignInMain> {
                         checkNotify = "username or password don't exist";
                       });
                     }
+
+                    User user = await DataBaseHelper.instance.getUser(name);
+
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchWidget(user: user)));
                   },
                   child: const Text('Sign In'),
                 ),

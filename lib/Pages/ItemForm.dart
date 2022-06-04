@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mazadatkom/DBs/Auction_Model.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
+import 'package:mazadatkom/DBs/UserItem_Model.dart';
 import 'package:mazadatkom/Pages/ItemTile.dart';
 
+import '../DBs/User_Model.dart';
+
 class ItemFormPage extends StatefulWidget {
-  const ItemFormPage({Key? key}) : super(key: key);
+  const ItemFormPage({Key? key, required this.user}) : super(key: key);
+  final User? user;
 
   @override
   State<ItemFormPage> createState() => _ItemFormPageState();
@@ -64,6 +68,8 @@ class _ItemFormPageState extends State<ItemFormPage> {
         startPrice: int.parse(_formInput[2].text),
         minBid: int.parse(_formInput[2].text));
     await DataBaseHelper.instance.insertAuction(auction);
+
+    UserItem userItem = UserItem(itemID: itemsCount ?? 0,userID: 0 );
   }
 
   void printItems() async {

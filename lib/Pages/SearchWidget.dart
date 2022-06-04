@@ -6,8 +6,11 @@ import 'package:mazadatkom/Pages/ItemTile.dart';
 import 'package:mazadatkom/Pages/ItemForm.dart';
 import 'package:mazadatkom/Pages/SearchResultsPage.dart';
 
+import '../DBs/User_Model.dart';
+
 class SearchWidget extends StatefulWidget {
-  const SearchWidget({Key? key}) : super(key: key);
+  const SearchWidget({Key? key, required this.user}) : super(key: key);
+  final User? user;
 
   @override
   _SearchWidgetState createState() => _SearchWidgetState();
@@ -67,7 +70,7 @@ class _SearchWidgetState extends State<SearchWidget> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ItemFormPage()));
+              context, MaterialPageRoute(builder: (context) => ItemFormPage(user: widget.user,)));
         },
         tooltip: 'increment',
         child: const Icon(Icons.add),

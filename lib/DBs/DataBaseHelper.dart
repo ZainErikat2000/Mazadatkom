@@ -147,10 +147,10 @@ class DataBaseHelper {
     Database? database = await DataBaseHelper.instance.database;
 
     List<Map<String, dynamic>> result = await database?.query(
-      _auctionTableName,
-      where: '$_auctionColID = ?',
-      whereArgs: [id],
-    ) ??
+          _auctionTableName,
+          where: '$_auctionColID = ?',
+          whereArgs: [id],
+        ) ??
         List.filled(0, {});
     Auction auction = Auction.fromMap(result[0]);
 
@@ -183,6 +183,18 @@ class DataBaseHelper {
   }
 
   //users table operations
+  Future<User> getUser(String name) async {
+    Database? database = await DataBaseHelper.instance.database;
+
+    List<Map<String, dynamic>> result = await database?.query(_userTableName,
+            where: '$_userColName = ?', whereArgs: [name]) ??
+        List.filled(0, {});
+
+    User user = User.fromMap(result[0]);
+
+    return user;
+  }
+
   Future<void> insertUser(User user) async {
     Database? database = await instance.database;
     await database?.insert(_userTableName, user.toMap(),
