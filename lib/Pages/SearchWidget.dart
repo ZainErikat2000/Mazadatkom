@@ -5,6 +5,7 @@ import 'package:mazadatkom/Pages/AuctionPage.dart';
 import 'package:mazadatkom/Pages/ItemTile.dart';
 import 'package:mazadatkom/Pages/ItemForm.dart';
 import 'package:mazadatkom/Pages/SearchResultsPage.dart';
+import 'package:mazadatkom/Pages/UserItemsPage.dart';
 
 import '../DBs/User_Model.dart';
 
@@ -19,7 +20,7 @@ class SearchWidget extends StatefulWidget {
 class _SearchWidgetState extends State<SearchWidget> {
   TextEditingController searchController = TextEditingController();
   Icon searchIcon = const Icon(Icons.search);
-  Icon refreshIcon = const Icon(Icons.refresh);
+  Icon refreshIcon = const Icon(Icons.input);
   Widget searchBar = const Text("Search");
   int listItemsCount = 5;
 
@@ -32,13 +33,28 @@ class _SearchWidgetState extends State<SearchWidget> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserItemsPage(
+                    user: widget.user,
+                  ),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.person,
+            ),
+          ),
+          IconButton(
               onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SearchResultsPage(
-                                searchterm: searchController.text,
-                              )));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SearchResultsPage(
+                              searchterm: searchController.text,
+                            )));
               },
               icon: refreshIcon),
           IconButton(
@@ -46,8 +62,11 @@ class _SearchWidgetState extends State<SearchWidget> {
               setState(() {
                 if (searchIcon.icon == Icons.search) {
                   searchIcon = const Icon(Icons.cancel);
-                  searchBar = TextField(controller: searchController,
-                    decoration: InputDecoration(hintText: "Enter query",),
+                  searchBar = TextField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      hintText: "Enter query",
+                    ),
                   );
                 } else {
                   searchIcon = const Icon(Icons.search);
@@ -70,7 +89,11 @@ class _SearchWidgetState extends State<SearchWidget> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ItemFormPage(user: widget.user,)));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ItemFormPage(
+                        user: widget.user,
+                      )));
         },
         tooltip: 'increment',
         child: const Icon(Icons.add),

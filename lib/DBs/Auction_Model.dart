@@ -12,13 +12,13 @@ class Auction {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'start_Price': startPrice,
-      'min_Bid': minBid,
+      'start_price': startPrice,
+      'min_bid': minBid,
     };
   }
 
   Auction.fromMap(Map<String, dynamic> result)
       : id = result['id'],
-        startPrice = result['start_Price'],
-        minBid = result['min_Bid'];
+        startPrice = result['start_price'],
+        minBid = result['min_bid'];
 }

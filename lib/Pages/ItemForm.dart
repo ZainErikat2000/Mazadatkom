@@ -24,7 +24,7 @@ class _ItemFormPageState extends State<ItemFormPage> {
       date: '',
       minBid: 1,
       startPrice: 1,
-      item: Item(id: 1,name: '',description: ''),
+      item: Item(id: 1, name: '', description: ''),
     );
   }
 
@@ -48,14 +48,12 @@ class _ItemFormPageState extends State<ItemFormPage> {
   void getFormInputs() async {
     var itemsCount = await DataBaseHelper.instance.getItemsCount();
 
-    for(int i = 0; i<_formInput.length ; i++)
-      {
-        if(_formInput[i].text == '')
-          {
-            print('renter form');
-            return;
-          }
+    for (int i = 0; i < _formInput.length; i++) {
+      if (_formInput[i].text == '') {
+        print('renter form');
+        return;
       }
+    }
 
     Item item = Item(
         id: itemsCount,
@@ -65,16 +63,20 @@ class _ItemFormPageState extends State<ItemFormPage> {
 
     Auction auction = Auction(
         id: itemsCount,
-        startPrice: int.parse(_formInput[2].text),
+        startPrice: int.parse(_formInput[3].text),
         minBid: int.parse(_formInput[2].text));
     await DataBaseHelper.instance.insertAuction(auction);
 
-    UserItem userItem = UserItem(itemID: itemsCount ?? 0,userID: 0 );
+    UserItem userItem =
+        UserItem(itemID: itemsCount ?? 0, userID: widget.user?.id ?? 0);
+
+    await DataBaseHelper.instance.insertUserItem(userItem);
   }
 
   void printItems() async {
     await DataBaseHelper.instance.printItems();
     await DataBaseHelper.instance.printAuctions();
+    await DataBaseHelper.instance.printUserItems();
   }
 
   void clearItems() async {
@@ -125,15 +127,11 @@ class _ItemFormPageState extends State<ItemFormPage> {
                   },
                   child: const Text('ok')),
               ElevatedButton(
-                  onPressed: () {
-                    printItems();
-                  },
-                  child: const Text('print log')),
-              ElevatedButton(
-                  onPressed: () {
-                    clearItems();
-                  },
-                  child: const Text('clear items')),
+                onPressed: () {
+                  printItems();
+                },
+                child: const Text('print log'),
+              ),
             ],
           ),
         ),

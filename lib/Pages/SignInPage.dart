@@ -74,11 +74,21 @@ class _SignInMainState extends State<SignInMain> {
                       setState(() {
                         checkNotify = "username or password don't exist";
                       });
+                      return;
                     }
+
+                    setState(() {
+                      checkNotify = '';
+                    });
 
                     User user = await DataBaseHelper.instance.getUser(name);
 
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchWidget(user: user)));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchWidget(user: user),
+                      ),
+                    );
                   },
                   child: const Text('Sign In'),
                 ),

@@ -82,7 +82,7 @@ class _AuctionPageState extends State<AuctionPage> {
                 } else {
                   int? currentbid = int.parse(bidtext);
                   print('${int.parse(minb.toString())}');
-                  if (currentbid > int.parse(minb.toString())) {
+                  if (currentbid >= int.parse(minb.toString())) {
                     setState(() => widget.startPrice = (strtp! + currentbid));
                   }
                 }

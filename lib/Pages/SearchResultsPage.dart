@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../DBs/DataBaseHelper.dart';
 import 'ItemTile.dart';
 
@@ -25,7 +24,7 @@ class SearchResultsPage extends StatelessWidget {
               : ListView.builder(
                   itemCount: dataLength,
                   itemBuilder: (context, i) => ItemTile(
-                      color: i.isOdd ? Colors.redAccent : Colors.greenAccent,
+                      color: i.isOdd ? Colors.grey[300] : Colors.white,
                       item: data[i],
                       description: data[i].description),
                 );

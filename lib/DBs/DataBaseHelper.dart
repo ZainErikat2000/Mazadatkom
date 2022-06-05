@@ -86,7 +86,7 @@ class DataBaseHelper {
 
     await database.execute('''
     CREATE TABLE $_userTableName(
-    $_userColID INT NOT NULL,
+    $_userColID INT PRIMARY KEY NOT NULL,
     $_userColName TEXT NOT NULL,
     $_userColEmail TEXT NOT NULL,
     $_userColPass TEXT NOT NULL
@@ -95,7 +95,6 @@ class DataBaseHelper {
 
     await database.execute('''
     CREATE TABLE $_userItemTableName(
-    $_userColID INT NOT NULL,
     $_userItemColUserID TEXT NOT NULL,
     $_userItemColItemID TEXT NOT NULL,
     FOREIGN KEY($_userItemColUserID) REFERENCES $_userTableName($_userColID),
@@ -286,8 +285,9 @@ class DataBaseHelper {
         where: '$_userItemColUserID = ?', whereArgs: [userItem.userID]);
   }
 
-  Future<List<UserItem>> getUserItems({int? userID}) async {
+  Future<List<Item>> getUserItems({int? userID}) async {
     Database? database = await DataBaseHelper.instance.database;
+
 
     List<Map<String, dynamic>> queryResult = await database?.query(
             _userItemTableName,
@@ -295,17 +295,54 @@ class DataBaseHelper {
             whereArgs: [userID]) ??
         List<Map<String, dynamic>>.filled(0, {});
 
-    int length = queryResult.length;
 
-    return List.generate(
+    int length = queryResult.length;
+    print(queryResult[0][_userItemColUserID]);
+
+    List<UserItem> userItems = List.generate(
       length,
       (i) => UserItem(
         itemID: queryResult[i][_userItemColItemID],
         userID: queryResult[i][_userItemColUserID],
       ),
     );
+
+    List<Map<String, dynamic>> items = List<Map<String, dynamic>>.empty();
+
+    for (int i = 0; i < userItems.length; i++) {
+      List<Map<String, dynamic>> x = await database?.query(
+            _itemsTableName,
+            where: '$_itemColID = ?',
+            whereArgs: [userItems[i].itemID],
+          ) ??
+          List.filled(0, {});
+      print(x[0]["id"]);
+      items.add(x[0]);
+    }
+
+    int length1 = items.length;
+
+    return List.generate(
+      length1,
+      (i) => Item(
+        id: items[i][_itemColID],
+        name: items[i][_itemColName],
+        description: items[i][_itemColDescription],
+      ),
+    );
   }
 
+  Future<void> printUserItems() async {
+    Database? database = await instance.database;
+
+    print('printing user items');
+    //prints table rows
+    (await database?.query(_userItemTableName,
+        columns: [_userItemColItemID,_userItemColUserID]))
+        ?.forEach((row) {
+      print(row);
+    });
+  }
   //other operations
   Future<void> printAuctions() async {
     Database? database = await instance.database;
