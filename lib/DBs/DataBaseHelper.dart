@@ -95,8 +95,8 @@ class DataBaseHelper {
 
     await database.execute('''
     CREATE TABLE $_userItemTableName(
-    $_userItemColUserID TEXT NOT NULL,
-    $_userItemColItemID TEXT NOT NULL,
+    $_userItemColUserID INT NOT NULL,
+    $_userItemColItemID INT NOT NULL,
     FOREIGN KEY($_userItemColUserID) REFERENCES $_userTableName($_userColID),
     FOREIGN KEY($_userItemColItemID) REFERENCES $_itemsTableName($_itemColID)
     )
@@ -307,7 +307,7 @@ class DataBaseHelper {
       ),
     );
 
-    List<Map<String, dynamic>> items = List<Map<String, dynamic>>.empty();
+    List<Map<String, dynamic>> items = List<Map<String, dynamic>>.empty(growable: true);
 
     for (int i = 0; i < userItems.length; i++) {
       List<Map<String, dynamic>> x = await database?.query(

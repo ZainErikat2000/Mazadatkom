@@ -72,7 +72,7 @@ class _SignInMainState extends State<SignInMain> {
 
                     if (!signInCheck) {
                       setState(() {
-                        checkNotify = "username or password don't exist";
+                        checkNotify = "username or password doesn't exist";
                       });
                       return;
                     }
