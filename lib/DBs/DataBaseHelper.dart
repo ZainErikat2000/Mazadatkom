@@ -16,6 +16,7 @@ class DataBaseHelper {
   static const _itemColID = 'id';
   static const _itemColName = 'name';
   static const _itemColDescription = 'description';
+  static const _itemColCategory = 'category';
 
   //Auction table variables
   static const _auctionTableName = 'Auctions';
@@ -70,7 +71,8 @@ class DataBaseHelper {
     CREATE TABLE $_itemsTableName(
     $_itemColID INT PRIMARY KEY NOT NULL,
     $_itemColName TEXT NOT NULL,
-    $_itemColDescription TEXT NOT NULL
+    $_itemColDescription TEXT NOT NULL,
+    $_itemColCategory TEXT NOT NULL
     )
     ''');
 
@@ -174,8 +176,12 @@ class DataBaseHelper {
     Database? database = await instance.database;
 
     //prints table rows
-    (await database?.query(_itemsTableName,
-            columns: [_itemColID, _itemColName, _itemColDescription]))
+    (await database?.query(_itemsTableName, columns: [
+      _itemColID,
+      _itemColName,
+      _itemColDescription,
+      _itemColCategory
+    ]))
         ?.forEach((row) {
       print(row);
     });
@@ -288,13 +294,11 @@ class DataBaseHelper {
   Future<List<Item>> getUserItems({int? userID}) async {
     Database? database = await DataBaseHelper.instance.database;
 
-
     List<Map<String, dynamic>> queryResult = await database?.query(
             _userItemTableName,
             where: '$_userItemColUserID = ?',
             whereArgs: [userID]) ??
         List<Map<String, dynamic>>.filled(0, {});
-
 
     int length = queryResult.length;
     print(queryResult[0][_userItemColUserID]);
@@ -307,7 +311,8 @@ class DataBaseHelper {
       ),
     );
 
-    List<Map<String, dynamic>> items = List<Map<String, dynamic>>.empty(growable: true);
+    List<Map<String, dynamic>> items =
+        List<Map<String, dynamic>>.empty(growable: true);
 
     for (int i = 0; i < userItems.length; i++) {
       List<Map<String, dynamic>> x = await database?.query(
@@ -328,6 +333,7 @@ class DataBaseHelper {
         id: items[i][_itemColID],
         name: items[i][_itemColName],
         description: items[i][_itemColDescription],
+        category: items[i][_itemColCategory],
       ),
     );
   }
@@ -338,11 +344,12 @@ class DataBaseHelper {
     print('printing user items');
     //prints table rows
     (await database?.query(_userItemTableName,
-        columns: [_userItemColItemID,_userItemColUserID]))
+            columns: [_userItemColItemID, _userItemColUserID]))
         ?.forEach((row) {
       print(row);
     });
   }
+
   //other operations
   Future<void> printAuctions() async {
     Database? database = await instance.database;
@@ -394,11 +401,40 @@ class DataBaseHelper {
               id: items![i][_itemColID],
               name: items[i][_itemColName],
               description: items[i][_itemColDescription],
+              category: items[i][_itemColCategory],
             ));
   }
 
-  Future<List<Item>> searchForItems({String searchTerm = ''}) async {
+  Future<List<Item>> searchForItems(
+      {String searchTerm = '', String category = 'None'}) async {
     final database = await instance.database;
+
+    if (category != 'None') {
+      List<Map<String, dynamic>>? itemsByCategory;
+      try {
+        itemsByCategory = await database?.query(_itemsTableName,
+            where: '$_itemColCategory = ?', whereArgs: [category]);
+
+        int len = itemsByCategory?.length ?? 0;
+
+        if (len == 0) {
+          print('no items found');
+          return List<Item>.empty();
+        }
+
+        return List.generate(
+          len,
+          (i) => Item(
+              id: itemsByCategory?[i][_itemColID],
+              name: itemsByCategory?[i][_itemColName],
+              description: itemsByCategory?[i][_itemColDescription],
+              category: itemsByCategory?[i][_itemColCategory]),
+        );
+      } catch (e) {
+        print(e.toString());
+        itemsByCategory = List.empty();
+      }
+    }
 
     List<Map<String, dynamic>>? items = await database?.query(_itemsTableName,
         where: '$_itemColName LIKE ?', whereArgs: ['%$searchTerm%']);
@@ -411,6 +447,7 @@ class DataBaseHelper {
         id: items![i][_itemColID],
         name: items[i][_itemColName],
         description: items[i][_itemColDescription],
+        category: items[i][_itemColCategory],
       ),
     );
   }

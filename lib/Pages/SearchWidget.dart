@@ -24,37 +24,79 @@ class _SearchWidgetState extends State<SearchWidget> {
   Widget searchBar = const Text("Search");
   int listItemsCount = 5;
 
+  List<DropdownMenuItem<String>> categories = [
+    const DropdownMenuItem(
+      child: Text('None'),
+      value: 'None',
+    ),
+    const DropdownMenuItem(
+      child: Text('Antique'),
+      value: 'Antique',
+    ),
+    const DropdownMenuItem(
+      child: Text('Tech'),
+      value: 'Tech',
+    ),
+    const DropdownMenuItem(
+      child: Text('Other'),
+      value: 'Other',
+    )
+  ];
+  var dropDowVal = 'None';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //search widget within appbar
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            Text('User'),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserItemsPage(
+                      user: widget.user,
+                    ),
+                  ),
+                );
+              },
+              icon: Icon(
+                Icons.person,
+              ),
+            )
+          ],
+        ),
+      ),
+      //search controls within appbar
       appBar: AppBar(
         title: searchBar,
         centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UserItemsPage(
-                    user: widget.user,
-                  ),
-                ),
-              );
-            },
-            icon: Icon(
-              Icons.person,
-            ),
-          ),
+        actions: <Widget>[DropdownButton(
+        value: dropDowVal,
+        items: categories,
+        onChanged: (category) {
+          if (category is String) {
+            setState(
+                  () {
+                dropDowVal = category;
+              },
+            );
+          }
+        },
+      ),
           IconButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SearchResultsPage(
-                              searchterm: searchController.text,
-                            )));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchResultsPage(
+                      searchterm: searchController.text,
+                      category: dropDowVal,
+                    ),
+                  ),
+                );
               },
               icon: refreshIcon),
           IconButton(
@@ -64,7 +106,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                   searchIcon = const Icon(Icons.cancel);
                   searchBar = TextField(
                     controller: searchController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Enter query",
                     ),
                   );
@@ -82,7 +124,7 @@ class _SearchWidgetState extends State<SearchWidget> {
       //listview within the container
       body: Container(
         color: Colors.grey[300],
-        child: ItemsList(),
+        child: const ItemsList(),
       ),
 
       //floating action button to add items

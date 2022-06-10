@@ -3,15 +3,16 @@ import '../DBs/DataBaseHelper.dart';
 import 'ItemTile.dart';
 
 class SearchResultsPage extends StatelessWidget {
-  const SearchResultsPage({Key? key, required this.searchterm}) : super(key: key);
+   SearchResultsPage({Key? key, required this.searchterm,required this.category}) : super(key: key);
   final String? searchterm;
+  String category;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
         key: key,
-        future: DataBaseHelper.instance.searchForItems(searchTerm: searchterm ?? ''),
+        future: DataBaseHelper.instance.searchForItems(searchTerm: searchterm ?? '',category: category),
         initialData: const [],
         builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           var data = snapshot.data;

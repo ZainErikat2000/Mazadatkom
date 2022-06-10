@@ -5,7 +5,7 @@ import '../DBs/User_Model.dart';
 import 'ItemTile.dart';
 
 class UserItemsPage extends StatelessWidget {
-  const UserItemsPage({Key? key,this.user}) : super(key: key);
+  const UserItemsPage({Key? key, this.user}) : super(key: key);
   final User? user;
 
   @override
@@ -21,15 +21,20 @@ class UserItemsPage extends StatelessWidget {
 
           return dataLength == 0
               ? const Center(
-            child: Text('no data found'),
-          )
+                  child: Text('no data found'),
+                )
               : ListView.builder(
-            itemCount: dataLength,
-            itemBuilder: (context, i) => ItemTile(
-                color: i.isOdd ? Colors.grey[300] : Colors.white,
-                item: data?[i] ?? Item(id: 1, name: 'no name', description: 'no description'),
-                description: data?[i]?.description ?? 'no description'),
-          );
+                  itemCount: dataLength,
+                  itemBuilder: (context, i) => ItemTile(
+                      color: i.isOdd ? Colors.grey[300] : Colors.white,
+                      item: data?[i] ??
+                          Item(
+                              id: 1,
+                              name: 'no name',
+                              description: 'no description',
+                              category: 'no category'),
+                      description: data?[i]?.description ?? 'no description'),
+                );
         },
       ),
     );

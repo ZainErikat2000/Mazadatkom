@@ -24,9 +24,29 @@ class _ItemFormPageState extends State<ItemFormPage> {
       date: '',
       minBid: 1,
       startPrice: 1,
-      item: Item(id: 1, name: '', description: ''),
+      item: Item(id: 1, name: '', description: '', category: ''),
     );
   }
+
+  List<DropdownMenuItem<String>> categories = [
+    const DropdownMenuItem(
+      child: Text('None'),
+      value: 'None',
+    ),
+    const DropdownMenuItem(
+      child: Text('Antique'),
+      value: 'Antique',
+    ),
+    const DropdownMenuItem(
+      child: Text('Tech'),
+      value: 'Tech',
+    ),
+    const DropdownMenuItem(
+      child: Text('Other'),
+      value: 'Other',
+    )
+  ];
+  var dropDowVal = 'None';
 
   int itemID = 1;
 
@@ -48,9 +68,14 @@ class _ItemFormPageState extends State<ItemFormPage> {
   void getFormInputs() async {
     var itemsCount = await DataBaseHelper.instance.getItemsCount();
 
+    if (dropDowVal == '' || dropDowVal == 'None') {
+      print('choose category');
+      return;
+    }
+
     for (int i = 0; i < _formInput.length; i++) {
       if (_formInput[i].text == '') {
-        print('renter form');
+        print('reenter form');
         return;
       }
     }
@@ -58,7 +83,8 @@ class _ItemFormPageState extends State<ItemFormPage> {
     Item item = Item(
         id: itemsCount,
         name: _formInput[0].text,
-        description: _formInput[1].text);
+        description: _formInput[1].text,
+        category: dropDowVal);
     await DataBaseHelper.instance.insertItem(item);
 
     Auction auction = Auction(
@@ -99,6 +125,28 @@ class _ItemFormPageState extends State<ItemFormPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    'Category:   ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  DropdownButton(
+                    value: dropDowVal,
+                    items: categories,
+                    onChanged: (category) {
+                      if (category is String) {
+                        setState(
+                          () {
+                            dropDowVal = category;
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
               TextFormField(
                 controller: _formInput[0],
                 decoration: const InputDecoration(
