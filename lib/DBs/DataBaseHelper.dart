@@ -412,8 +412,15 @@ class DataBaseHelper {
     if (category != 'None') {
       List<Map<String, dynamic>>? itemsByCategory;
       try {
-        itemsByCategory = await database?.query(_itemsTableName,
-            where: '$_itemColCategory = ?', whereArgs: [category]);
+        itemsByCategory = await database?.rawQuery('''
+        SELECT 
+              *
+        FROM 
+              $_itemsTableName
+        WHERE 
+              $_itemColCategory = ?
+        AND $_itemColName LIKE ?
+        ''',[category,searchTerm],);
 
         int len = itemsByCategory?.length ?? 0;
 
