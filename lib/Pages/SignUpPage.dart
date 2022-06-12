@@ -87,6 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 //sign up functionality
                 ElevatedButton(
                   onPressed: () async {
+                    //controllers prep
                     String pass = passController.text;
                     String passRe = passRepeatController.text;
 
@@ -109,6 +110,24 @@ class _SignUpPageState extends State<SignUpPage> {
                       setState(() {
                         credNotify =
                             "user name and email mustn't contain whitespace";
+                      });
+                      return;
+                    }
+
+                    //check email through regular expression
+                    bool emailValid = false;
+                    try {
+                      emailValid = RegExp(
+                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                          .hasMatch(email);
+                    }
+                    catch(e){
+                      print(e.toString());
+                    }
+
+                    if (!emailValid) {
+                      setState(() {
+                        credNotify = 'email format is not valid';
                       });
                       return;
                     }

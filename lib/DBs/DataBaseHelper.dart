@@ -298,10 +298,9 @@ class DataBaseHelper {
             _userItemTableName,
             where: '$_userItemColUserID = ?',
             whereArgs: [userID]) ??
-        List<Map<String, dynamic>>.filled(0, {});
+        List<Map<String, dynamic>>.empty();
 
     int length = queryResult.length;
-    print(queryResult[0][_userItemColUserID]);
 
     List<UserItem> userItems = List.generate(
       length,

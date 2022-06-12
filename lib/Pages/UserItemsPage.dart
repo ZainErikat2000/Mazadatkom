@@ -33,7 +33,7 @@ class UserItemsPage extends StatelessWidget {
                               name: 'no name',
                               description: 'no description',
                               category: 'no category'),
-                      description: data?[i]?.description ?? 'no description'),
+                      description: 'no description'),
                 );
         },
       ),
