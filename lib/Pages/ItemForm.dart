@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mazadatkom/DBs/Auction_Model.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
@@ -18,12 +19,9 @@ class ItemFormPage extends StatefulWidget {
 class _ItemFormPageState extends State<ItemFormPage> {
   Widget buildItemBox(BuildContext context) {
     return ItemTile(
+      user: User(id: 1, name: '', email: '', password: ''),
       color: Colors.white,
-      itemName: '',
       description: '',
-      date: '',
-      minBid: 1,
-      startPrice: 1,
       item: Item(id: 1, name: '', description: '', category: ''),
     );
   }
@@ -162,11 +160,19 @@ class _ItemFormPageState extends State<ItemFormPage> {
               const SizedBox(height: 8),
               TextFormField(
                 controller: _formInput[2],
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
                 decoration: const InputDecoration(labelText: 'Min Bid'),
               ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _formInput[3],
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
                 decoration: const InputDecoration(labelText: 'Start Price'),
               ),
               ElevatedButton(

@@ -137,6 +137,18 @@ class DataBaseHelper {
         where: 'id = ?', whereArgs: [item.id]);
   }
 
+  Future<void> deleteItem(int id) async {
+    Database? database = await instance.database;
+
+    await database?.execute('''
+    BEGIN;
+    DELETE FROM $_itemsTableName WHERE $_itemColID = $id;
+    DELETE FROM $_auctionTableName WHERE $_auctionColID = $id;
+    DELETE FROM $_userItemTableName WHERE $_userItemColItemID = $id; 
+    COMMIT;
+    ''',);
+  }
+
   Future<int?> getItemsCount() async {
     Database? database = await instance.database;
     List<Map>? result = await database?.query(_itemsTableName);
@@ -193,7 +205,7 @@ class DataBaseHelper {
 
     List<Map<String, dynamic>> result = await database?.query(_userTableName,
             where: '$_userColName = ?', whereArgs: [name]) ??
-        List.filled(0, {});
+        List.empty();
 
     User user = User.fromMap(result[0]);
 
@@ -224,7 +236,7 @@ class DataBaseHelper {
     //check if name is in use
     List<Map> nameResult = await database?.query(_userTableName,
             where: '$_userColName = ?', whereArgs: [name]) ??
-        List.filled(0, {});
+        List.empty();
     if (nameResult.isNotEmpty) {
       return false;
     }
@@ -233,7 +245,7 @@ class DataBaseHelper {
     print('email exists');
     List<Map> emailResult = await database?.query(_userTableName,
             where: '$_userColEmail = ?', whereArgs: [email]) ??
-        List.filled(0, {});
+        List.empty();
     if (emailResult.isNotEmpty) {
       return false;
     }
@@ -248,7 +260,7 @@ class DataBaseHelper {
     //check if name is in use
     List<Map> nameResult = await database?.query(_userTableName,
             where: '$_userColName = ?', whereArgs: [name]) ??
-        List.filled(0, {});
+        List.empty();
     if (nameResult.isEmpty) {
       print("user doesn't exist");
       return false;
@@ -285,10 +297,29 @@ class DataBaseHelper {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<void> deleteUserItem(UserItem userItem) async {
+    Database? database = await instance.database;
+    await database?.delete(_userItemTableName,
+        where: '$_userItemColUserID = ?', whereArgs: [userItem.userID]);
+  }
+
   Future<void> updateUserItem(UserItem userItem) async {
     Database? database = await instance.database;
     await database?.update(_userItemTableName, userItem.toMap(),
         where: '$_userItemColUserID = ?', whereArgs: [userItem.userID]);
+  }
+
+  Future<UserItem> getUserItem(int itemID)async{
+    Database? database = await DataBaseHelper.instance.database;
+
+    List<Map<String,dynamic>>? result = await database?.rawQuery('''
+    SELECT *
+    FROM $_userItemTableName
+    WHERE $_userItemColItemID = ?
+    ''',[itemID,]);
+
+    UserItem userItem = UserItem.fromMap(result![0]);
+    return userItem;
   }
 
   Future<List<Item>> getUserItems({int? userID}) async {
@@ -319,7 +350,7 @@ class DataBaseHelper {
             where: '$_itemColID = ?',
             whereArgs: [userItems[i].itemID],
           ) ??
-          List.filled(0, {});
+          List.empty();
       print(x[0]["id"]);
       items.add(x[0]);
     }
@@ -411,7 +442,8 @@ class DataBaseHelper {
     if (category != 'None') {
       List<Map<String, dynamic>>? itemsByCategory;
       try {
-        itemsByCategory = await database?.rawQuery('''
+        itemsByCategory = await database?.rawQuery(
+          '''
         SELECT 
               *
         FROM 
@@ -419,7 +451,9 @@ class DataBaseHelper {
         WHERE 
               $_itemColCategory = ?
         AND $_itemColName LIKE ?
-        ''',[category,searchTerm],);
+        ''',
+          [category, searchTerm],
+        );
 
         int len = itemsByCategory?.length ?? 0;
 

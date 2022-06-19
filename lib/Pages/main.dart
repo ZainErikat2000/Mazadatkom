@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mazadatkom/Pages/Auth_Wraper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mazadatkom/Pages/SearchWidget.dart';
+import 'package:mazadatkom/Pages/UserItemsPage.dart';
+import 'package:mazadatkom/Pages/UsersItemView.dart';
 
 void main () async
 {

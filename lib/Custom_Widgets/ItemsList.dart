@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/Pages/ItemTile.dart';
 
+import '../DBs/User_Model.dart';
+
 class ItemsList extends StatelessWidget {
-  const ItemsList({Key? key}) : super(key: key);
+  const ItemsList({Key? key,required this.user}) : super(key: key);
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class ItemsList extends StatelessWidget {
                   itemBuilder: (context, i) => ItemTile(
                       color: i.isOdd ? Colors.grey[300] : Colors.white,
                       item: data[i],
-                      description: data[i].description),
+                      description: data[i].description,user: user,),
                 );
         },
       ),

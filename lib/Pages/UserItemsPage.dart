@@ -26,14 +26,16 @@ class UserItemsPage extends StatelessWidget {
               : ListView.builder(
                   itemCount: dataLength,
                   itemBuilder: (context, i) => ItemTile(
-                      color: i.isOdd ? Colors.grey[300] : Colors.white,
-                      item: data?[i] ??
-                          Item(
-                              id: 1,
-                              name: 'no name',
-                              description: 'no description',
-                              category: 'no category'),
-                      description: 'no description'),
+                    color: i.isOdd ? Colors.grey[300] : Colors.white,
+                    item: data?[i] ??
+                        Item(
+                            id: 1,
+                            name: 'no name',
+                            description: 'no description',
+                            category: 'no category'),
+                    description: 'no description',
+                    user: User(id: 0, name: '', email: '', password: ''),
+                  ),
                 );
         },
       ),

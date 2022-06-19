@@ -92,8 +92,9 @@ class _SearchWidgetState extends State<SearchWidget> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => SearchResultsPage(
-                      searchterm: searchController.text,
+                      searchTerm: searchController.text,
                       category: dropDowVal,
+                      user: widget.user!,
                     ),
                   ),
                 );
@@ -124,7 +125,7 @@ class _SearchWidgetState extends State<SearchWidget> {
       //listview within the container
       body: Container(
         color: Colors.grey[300],
-        child: const ItemsList(),
+        child: ItemsList(user: widget.user!),
       ),
 
       //floating action button to add items

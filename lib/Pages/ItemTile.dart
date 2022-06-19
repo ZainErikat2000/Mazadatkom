@@ -2,26 +2,23 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
+import 'package:mazadatkom/DBs/UserItem_Model.dart';
+import 'package:mazadatkom/Pages/UsersItemView.dart';
 import '../DBs/Auction_Model.dart';
+import '../DBs/User_Model.dart';
 import 'AuctionPage.dart';
 
 class ItemTile extends StatelessWidget {
   const ItemTile(
       {Key? key,
+      required this.user,
       required this.color,
-      this.itemName,
       required this.description,
-      this.date,
-      this.minBid,
-      this.startPrice,
       required this.item})
       : super(key: key);
 
-  final String? itemName;
+  final User user;
   final String description;
-  final int? startPrice;
-  final int? minBid;
-  final String? date;
   final Color? color;
   final Item? item;
   //declared a static void Function to build the auction page independently of each item tile
@@ -30,7 +27,11 @@ class ItemTile extends StatelessWidget {
     int? mb,
     int? sp,
     Item it,
-  ) onPressed = (BuildContext context, int? mb, int? sp, Item it) {
+      User us
+  ) onPressed = (BuildContext context, int? mb, int? sp, Item it,User us) async {
+    UserItem userItem = await DataBaseHelper.instance.getUserItem(it.id ?? 0);
+
+    if(us.id != userItem.userID)
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -41,6 +42,14 @@ class ItemTile extends StatelessWidget {
         ),
       ),
     );
+    else{
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UsersItemView(item: it),
+        ),
+      );
+    }
   };
 
   @override
@@ -54,7 +63,7 @@ class ItemTile extends StatelessWidget {
           int min = auction.minBid;
           int startPrice = auction.startPrice;
 
-          onPressed(context, min, startPrice, item!);
+          onPressed(context, min, startPrice, item!,user);
         },
         title: Text(item?.name ?? ''),
         subtitle: Text(description),
