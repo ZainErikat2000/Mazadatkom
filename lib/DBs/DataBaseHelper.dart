@@ -141,11 +141,11 @@ class DataBaseHelper {
     Database? database = await instance.database;
 
     await database?.execute('''
-    BEGIN;
-    DELETE FROM $_itemsTableName WHERE $_itemColID = $id;
-    DELETE FROM $_auctionTableName WHERE $_auctionColID = $id;
-    DELETE FROM $_userItemTableName WHERE $_userItemColItemID = $id; 
-    COMMIT;
+    begin
+    DELETE FROM $_itemsTableName WHERE $_itemColID = ?
+    DELETE FROM $_auctionTableName WHERE $_auctionColID = ?
+    DELETE FROM $_userItemTableName WHERE $_userItemColItemID = ?
+    commit
     ''',);
   }
 
@@ -436,23 +436,18 @@ class DataBaseHelper {
   }
 
   Future<List<Item>> searchForItems(
-      {String searchTerm = '', String category = 'None'}) async {
+      {String searchterm = '', String category = 'None'}) async {
     final database = await instance.database;
 
     if (category != 'None') {
       List<Map<String, dynamic>>? itemsByCategory;
       try {
+        print(category);
         itemsByCategory = await database?.rawQuery(
           '''
-        SELECT 
-              *
-        FROM 
-              $_itemsTableName
-        WHERE 
-              $_itemColCategory = ?
-        AND $_itemColName LIKE ?
+        select * from $_itemsTableName where $_itemColCategory = ? and $_itemColName like ?
         ''',
-          [category, searchTerm],
+          [category, '%$searchterm%'],
         );
 
         int len = itemsByCategory?.length ?? 0;
@@ -477,7 +472,7 @@ class DataBaseHelper {
     }
 
     List<Map<String, dynamic>>? items = await database?.query(_itemsTableName,
-        where: '$_itemColName LIKE ?', whereArgs: ['%$searchTerm%']);
+        where: '$_itemColName LIKE ?', whereArgs: ['%$searchterm%']);
 
     int length = items?.length ?? 0;
 

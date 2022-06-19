@@ -17,14 +17,14 @@ class SearchResultsPage extends StatelessWidget {
       body: FutureBuilder(
         key: key,
         future: DataBaseHelper.instance
-            .searchForItems(searchTerm: searchTerm ?? '', category: category),
+            .searchForItems(searchterm: searchTerm ?? '', category: category),
         initialData: const [],
         builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           var data = snapshot.data;
           var dataLength = data!.length;
 
           return dataLength == 0
-              ? Center(
+              ? const Center(
                   child: Text('no data found'),
                 )
               : ListView.builder(
