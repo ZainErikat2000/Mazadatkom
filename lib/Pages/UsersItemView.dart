@@ -18,8 +18,6 @@ class _UsersItemViewState extends State<UsersItemView> {
   String activeStatus = 'No';
   String activeStatusButton = 'Activate';
 
-
-
   //initState can't handle async methods thus I used setState
   @override
   void setState(VoidCallback fn) async {
@@ -36,7 +34,9 @@ class _UsersItemViewState extends State<UsersItemView> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {setState(() { });});
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      setState(() {});
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text('Item State'),
@@ -69,7 +69,9 @@ class _UsersItemViewState extends State<UsersItemView> {
                       id: auction?.id,
                       minBid: auction?.minBid ?? 0,
                       startPrice: auction?.startPrice ?? 0,
-                      isActive: 1),
+                      isActive: 1,
+                      date: '',
+                      time: ''),
                 );
               } else {
                 await DataBaseHelper.instance.updateAuction(
@@ -77,18 +79,18 @@ class _UsersItemViewState extends State<UsersItemView> {
                       id: auction?.id,
                       minBid: auction?.minBid ?? 0,
                       startPrice: auction?.startPrice ?? 0,
-                      isActive: 0),
+                      isActive: 0,
+                      date: auction?.date ?? '',
+                      time: auction?.time ?? ''),
                 );
               }
               auction =
-              await DataBaseHelper.instance.getAuction(auction?.id ?? 0);
-              setState(() {
-
-              });
+                  await DataBaseHelper.instance.getAuction(auction?.id ?? 0);
+              setState(() {});
             },
             child: Text(
               auction?.isActive == 1 ? 'Deactivate' : 'Activate',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
               ),
             ),

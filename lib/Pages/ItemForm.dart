@@ -25,6 +25,15 @@ class _ItemFormPageState extends State<ItemFormPage> {
       item: Item(id: 1, name: '', description: '', category: ''),
     );
   }
+  String warningText = '';
+
+  //date and time variables
+  DateTime endDate = DateTime(2025, 1, 1, 9, 30);
+  DateTime? _dateTime = DateTime(2015, 1, 1, 9, 30);
+  TimeOfDay? _timeOfDay = TimeOfDay(hour: 0, minute: 0);
+  String _dtString = '';
+  String _todString = '';
+  bool _hasTime = false;
 
   List<DropdownMenuItem<String>> categories = [
     const DropdownMenuItem(
@@ -67,6 +76,10 @@ class _ItemFormPageState extends State<ItemFormPage> {
     var itemsCount = await DataBaseHelper.instance.getItemsCount();
 
     if (dropDowVal == '' || dropDowVal == 'None') {
+      setState(() {
+        warningText = 'please fill all fields';
+      });
+
       print('choose category');
       return;
     }
@@ -89,7 +102,9 @@ class _ItemFormPageState extends State<ItemFormPage> {
         id: itemsCount,
         startPrice: int.parse(_formInput[3].text),
         minBid: int.parse(_formInput[2].text),
-        isActive: 0);
+        isActive: 0,
+        date: _dtString,
+        time: _todString);
     await DataBaseHelper.instance.insertAuction(auction);
 
     UserItem userItem =
@@ -172,13 +187,49 @@ class _ItemFormPageState extends State<ItemFormPage> {
                 ],
                 decoration: const InputDecoration(labelText: 'Start Price'),
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    getFormInputs();
-                  },
-                  child: const Text('ok')),
+              //date and time picker + functionality
               ElevatedButton(
                 onPressed: () {
+                  showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: endDate)
+                      .then((value) {
+                    _dateTime = value;
+                    _dtString =
+                        '${_dateTime?.year}/${_dateTime?.month}/${_dateTime?.day}';
+                    showTimePicker(
+                            context: context, initialTime: TimeOfDay.now())
+                        .then((value) {
+                      _timeOfDay = value;
+                      _todString = '${_timeOfDay?.hour}:${_timeOfDay?.minute}';
+                    });
+                  });
+                },
+                child: Text('Pick a Date & Time'),
+              ),
+            Text(warningText,style: const TextStyle(color: Colors.redAccent),),
+            ElevatedButton(
+                onPressed: () {
+                  if(!_hasTime)
+                  {
+                    setState(() {
+                      warningText = 'please fill all the fields';
+                      return;
+                    });
+                  }
+                  setState(() {
+                    warningText = '';
+                    return;
+                  });
+                  getFormInputs();
+                },
+                child: const Text('ok')),
+              ElevatedButton(
+                onPressed: () {
+
+
                   printItems();
                 },
                 child: const Text('print log'),

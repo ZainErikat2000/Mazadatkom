@@ -24,6 +24,8 @@ class DataBaseHelper {
   static const _auctionColStartPrice = 'start_price';
   static const _auctionColMinBid = 'min_bid';
   static const _auctionColIsActive = 'is_active';
+  static const _auctionColDate = 'date';
+  static const _auctionColTime = 'time';
 
   //User table variables
   static const _userTableName = 'Users';
@@ -84,6 +86,8 @@ class DataBaseHelper {
     $_auctionColMinBid INT NOT NULL,
     $_auctionColStartPrice INT NOT NULL,
     $_auctionColIsActive INT NOT NULL,
+    $_auctionColDate TEXT NOT NULL,
+    $_auctionColTime TEXT NOT NULL,
     FOREIGN KEY($_auctionColID) REFERENCES $_itemsTableName($_itemColID)
     )
     ''');
@@ -388,7 +392,7 @@ class DataBaseHelper {
 
     //prints table rows
     (await database?.query(_auctionTableName,
-            columns: [_auctionColID, _auctionColStartPrice, _auctionColMinBid,_auctionColIsActive]))
+            columns: [_auctionColID, _auctionColStartPrice, _auctionColMinBid,_auctionColIsActive,_auctionColDate,_auctionColTime]))
         ?.forEach((row) {
       print(row);
     });
