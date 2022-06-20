@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
 import 'package:mazadatkom/DBs/UserItem_Model.dart';
+import 'package:mazadatkom/Pages/AuctionPageInactive.dart';
 import 'package:mazadatkom/Pages/UsersItemView.dart';
 import '../DBs/Auction_Model.dart';
 import '../DBs/User_Model.dart';
@@ -22,27 +23,39 @@ class ItemTile extends StatelessWidget {
   final Color? color;
   final Item? item;
   //declared a static void Function to build the auction page independently of each item tile
+
   static void Function(
-    BuildContext context,
-    int? mb,
-    int? sp,
-    Item it,
-      User us
-  ) onPressed = (BuildContext context, int? mb, int? sp, Item it,User us) async {
+          BuildContext context, int? mb, int? sp, Item it, User us, int ac
+          //nothing to worry about
+          ) onPressed =
+      (BuildContext context, int? mb, int? sp, Item it, User us, int ac) async {
     UserItem userItem = await DataBaseHelper.instance.getUserItem(it.id ?? 0);
 
-    if(us.id != userItem.userID)
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AuctionPage(
-          minBid: mb,
-          startPrice: sp,
-          item: it,
+    if (us.id != userItem.userID) {
+      if(ac == 1)
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AuctionPage(
+            minBid: mb,
+            startPrice: sp,
+            item: it,
+          ),
         ),
-      ),
-    );
-    else{
+      );
+      else{
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AuctionPageInactive(
+              minBid: mb,
+              startPrice: sp,
+              item: it,
+            ),
+          ),
+        );
+      }
+    } else {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -54,6 +67,8 @@ class ItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int isActive = 0;
+
     return Container(
       color: color,
       child: ListTile(
@@ -62,8 +77,9 @@ class ItemTile extends StatelessWidget {
               await DataBaseHelper.instance.getAuction(item?.id ?? 0);
           int min = auction.minBid;
           int startPrice = auction.startPrice;
+          int ac = auction.isActive;
 
-          onPressed(context, min, startPrice, item!,user);
+          onPressed(context, min, startPrice, item!, user, ac);
         },
         title: Text(item?.name ?? ''),
         subtitle: Text(description),
