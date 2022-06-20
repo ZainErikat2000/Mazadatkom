@@ -23,6 +23,7 @@ class DataBaseHelper {
   static const _auctionColID = 'id';
   static const _auctionColStartPrice = 'start_price';
   static const _auctionColMinBid = 'min_bid';
+  static const _auctionColIsActive = 'is_active';
 
   //User table variables
   static const _userTableName = 'Users';
@@ -82,6 +83,7 @@ class DataBaseHelper {
     $_auctionColID INT NOT NULL,
     $_auctionColMinBid INT NOT NULL,
     $_auctionColStartPrice INT NOT NULL,
+    $_auctionColIsActive INT NOT NULL,
     FOREIGN KEY($_auctionColID) REFERENCES $_itemsTableName($_itemColID)
     )
     ''');
@@ -180,7 +182,7 @@ class DataBaseHelper {
   Future<void> updateAuction(Auction auction) async {
     Database? database = await instance.database;
 
-    await database?.update(_itemsTableName, auction.toMap(),
+    await database?.update(_auctionTableName, auction.toMap(),
         where: 'id = ?', whereArgs: [auction.id]);
   }
 
@@ -386,12 +388,13 @@ class DataBaseHelper {
 
     //prints table rows
     (await database?.query(_auctionTableName,
-            columns: [_auctionColID, _auctionColStartPrice, _auctionColMinBid]))
+            columns: [_auctionColID, _auctionColStartPrice, _auctionColMinBid,_auctionColIsActive]))
         ?.forEach((row) {
       print(row);
     });
   }
 
+  /*
   Future<void> clearTables() async {
     //NO BETTER WAY OF CLEARING THE TABLE
     Database? database = await instance.database;
@@ -415,6 +418,7 @@ class DataBaseHelper {
     )
     ''');
   }
+  */
 
   //listview related operations
   Future<List<Item>> getItems() async {
@@ -445,7 +449,12 @@ class DataBaseHelper {
         print(category);
         itemsByCategory = await database?.rawQuery(
           '''
-        select * from $_itemsTableName where $_itemColCategory = ? and $_itemColName like ?
+        select *
+        from $_itemsTableName
+        where 
+        $_itemColCategory = ? 
+        and 
+        $_itemColName like ?
         ''',
           [category, '%$searchterm%'],
         );

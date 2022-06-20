@@ -62,7 +62,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                   ),
                 );
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.person,
               ),
             )

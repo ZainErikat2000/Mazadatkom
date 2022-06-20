@@ -88,7 +88,8 @@ class _ItemFormPageState extends State<ItemFormPage> {
     Auction auction = Auction(
         id: itemsCount,
         startPrice: int.parse(_formInput[3].text),
-        minBid: int.parse(_formInput[2].text));
+        minBid: int.parse(_formInput[2].text),
+        isActive: 0);
     await DataBaseHelper.instance.insertAuction(auction);
 
     UserItem userItem =
@@ -101,10 +102,6 @@ class _ItemFormPageState extends State<ItemFormPage> {
     await DataBaseHelper.instance.printItems();
     await DataBaseHelper.instance.printAuctions();
     await DataBaseHelper.instance.printUserItems();
-  }
-
-  void clearItems() async {
-    await DataBaseHelper.instance.clearTables();
   }
 
   @override
