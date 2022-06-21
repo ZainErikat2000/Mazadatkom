@@ -45,6 +45,7 @@ class DataBaseHelper {
   static const _buyerTableName = 'buyers';
   static const _buyerColUserID = 'buyer_id';
   static const _buyerColItemID = 'item_id';
+  static const _buyerBeenBought = 'been_bought';
 
   //singleton
   DataBaseHelper._constructDB();
@@ -121,6 +122,7 @@ class DataBaseHelper {
     CREATE TABLE $_buyerTableName(
     $_buyerColUserID INT NOT NULL,
     $_buyerColItemID INT NOT NULL,
+    $_buyerBeenBought INT NOT NULL,
     FOREIGN KEY($_buyerColUserID) REFERENCES $_userTableName($_userColID),
     FOREIGN KEY($_buyerColItemID) REFERENCES $_itemsTableName($_itemColID)
     )
@@ -314,6 +316,13 @@ class DataBaseHelper {
     });
   }
 
+  Future<User> getUserByID(int userID)async{
+    Database? database =  await instance.database;
+
+    List<Map<String,dynamic>>? result = await database?.query(_userTableName,where: '$_userColID = ?',whereArgs: [userID],);
+    return User.fromMap(result![0]);
+  }
+
   //items users table operations
   Future<void> insertUserItem(UserItem userItem) async {
     Database? database = await instance.database;
@@ -348,18 +357,17 @@ class DataBaseHelper {
 
   Future<void> updateBuyerItem(Buyer buyerItem) async {
     Database? database = await instance.database;
-    await database?.update(_buyerColItemID, buyerItem.toMap(),
+    await database?.update(_buyerTableName, buyerItem.toMap(),
         where: '$_buyerColItemID = ?', whereArgs: [buyerItem.itemID]);
   }
 
-  Future<bool> checkBuyerAndItem(int userID, int itemID) async {
+  Future<bool> checkBuyerAndItem(int itemID) async {
     Database? database = await instance.database;
 
     List<Map>? result = await database?.query(
       _buyerTableName,
-      where: '$_buyerColUserID = ? AND $_buyerColItemID = ?',
+      where: '$_buyerColItemID = ?',
       whereArgs: [
-        userID,
         itemID,
       ],
     );
@@ -370,6 +378,39 @@ class DataBaseHelper {
     } else {
       return true;
     }
+  }
+
+  Future<bool> checkBought(int itemID) async {
+    Database? database = await instance.database;
+
+    List<Map>? result = await database?.query(
+      _buyerTableName,
+      where: '$_buyerColItemID = ? AND $_buyerBeenBought = ?',
+      whereArgs: [
+        itemID,
+        1,
+      ],
+    );
+
+    int length = result?.length ?? 0;
+
+    if (length == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<Buyer> getBuyer(int itemID) async {
+    Database? database = await instance.database;
+
+    List<Map<String,dynamic>>? result = await database?.query(
+      _buyerTableName,
+      where: '$_buyerColItemID = ?',
+      whereArgs: [itemID],
+    );
+
+    return Buyer.fromMap(result![0]);
   }
 
   Future<List<Buyer>> getBuyersItems(int id) async {
@@ -387,8 +428,21 @@ class DataBaseHelper {
       (i) => Buyer(
         buyerID: result![i][_buyerColUserID],
         itemID: result[i][_buyerColItemID],
+        beenBought: result[i][_buyerBeenBought],
       ),
     );
+  }
+
+  Future<void> printBuyers() async {
+    Database? database = await instance.database;
+
+    print('printing users');
+    //prints table rows
+    (await database?.query(_buyerTableName,
+        columns: [_buyerColUserID, _buyerColItemID,_buyerBeenBought],))
+        ?.forEach((row) {
+      print(row);
+    });
   }
 
   Future<UserItem> getUserItem(int itemID) async {

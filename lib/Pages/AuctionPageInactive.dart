@@ -22,7 +22,7 @@ class AuctionPageInactive extends StatefulWidget {
 }
 
 class _AuctionPageState extends State<AuctionPageInactive> {
-  late Auction auction;
+  Auction? auction;
 
   @override
   void setState(VoidCallback fn) async {
@@ -79,16 +79,9 @@ class _AuctionPageState extends State<AuctionPageInactive> {
               ],
             ),
             Text('current price: $strtp'),
-            Container(
-              width: 100,
-              child: TextFormField(
-                controller: bidCompareCont,
-                decoration: const InputDecoration(labelText: 'Bid'),
-              ),
-            ),
             Row(
               children: <Widget>[
-                Text("Auction's at: ${auction.date}  ${auction.time}")
+                Text("Auction's at: ${auction?.date}  ${auction?.time}")
               ],
               mainAxisAlignment: MainAxisAlignment.center,
             ),

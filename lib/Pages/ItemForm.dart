@@ -117,6 +117,8 @@ class _ItemFormPageState extends State<ItemFormPage> {
     await DataBaseHelper.instance.printItems();
     await DataBaseHelper.instance.printAuctions();
     await DataBaseHelper.instance.printUserItems();
+    print('printing bought items');
+    await DataBaseHelper.instance.printBuyers();
   }
 
   @override

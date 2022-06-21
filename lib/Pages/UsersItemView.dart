@@ -4,6 +4,7 @@ import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
 
 import '../DBs/Auction_Model.dart';
+import '../DBs/Buyer_Model.dart';
 
 class UsersItemView extends StatefulWidget {
   const UsersItemView({Key? key, this.item}) : super(key: key);
@@ -17,6 +18,7 @@ class _UsersItemViewState extends State<UsersItemView> {
   Auction? auction;
   String activeStatus = 'No';
   String activeStatusButton = 'Activate';
+  String warningText = '';
 
   //initState can't handle async methods thus I used setState
   @override
@@ -60,9 +62,17 @@ class _UsersItemViewState extends State<UsersItemView> {
             height: 16,
           ),
           Text('Is active?: ${auction?.isActive == 1 ? 'Yes' : 'No'}'),
+          Text(
+            warningText,
+            style: const TextStyle(color: Colors.redAccent),
+          ),
           ElevatedButton(
             onPressed: () async {
               int status = auction?.isActive ?? 0;
+              bool wasBought = await DataBaseHelper.instance.checkBought(widget.item?.id ?? 0);
+
+              bool pendingBought = await DataBaseHelper.instance
+                  .checkBuyerAndItem(widget.item?.id ?? 0);
               if (status == 0) {
                 await DataBaseHelper.instance.updateAuction(
                   Auction(
@@ -74,6 +84,30 @@ class _UsersItemViewState extends State<UsersItemView> {
                       time: auction?.time ?? ''),
                 );
               } else {
+
+                if (!pendingBought) {
+                  setState(() {
+                    warningText = 'no buyers yet';
+                  });
+                  return;
+                }
+
+                if(wasBought){
+                  setState(() {
+                    warningText = 'already bought';
+                  });
+                  return;
+                }
+                Buyer buyer = await DataBaseHelper.instance
+                    .getBuyer(widget.item?.id ?? 0);
+
+                await DataBaseHelper.instance.updateBuyerItem(
+                  Buyer(
+                      buyerID: buyer.buyerID,
+                      itemID: buyer.itemID,
+                      beenBought: 1),
+                );
+
                 await DataBaseHelper.instance.updateAuction(
                   Auction(
                       id: auction?.id,

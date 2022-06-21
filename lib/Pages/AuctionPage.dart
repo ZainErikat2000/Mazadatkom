@@ -93,7 +93,7 @@ class _AuctionPageState extends State<AuctionPage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                int currentBid = int.parse(bidTextController.text);
+                int? currentBid = int.parse(bidTextController.text);
                 int minBid = auction?.minBid ?? 0;
                 if (currentBid < minBid) {
                   setState(() {
@@ -101,8 +101,14 @@ class _AuctionPageState extends State<AuctionPage> {
                     return;
                   });
                 }
-                int newPrice = auction?.startPrice ?? 0 + currentBid;
-                setState(() async {
+
+                setState(() {
+                  warningText = '';
+                  return;
+                });
+
+                int nullPrice =auction?.startPrice ?? 0;
+                int newPrice =  nullPrice + currentBid;
                   await DataBaseHelper.instance.updateAuction(
                     Auction(
                       id: auction?.id ?? 0,
@@ -117,24 +123,35 @@ class _AuctionPageState extends State<AuctionPage> {
                   //decide wither to insert or update the buyer tuple
                   bool buyerExists =
                       await DataBaseHelper.instance.checkBuyerAndItem(
-                    widget.user.id,
                     widget.item?.id ?? 0,
                   );
+
+                  //check if item was bought
+                  bool wasBought =
+                      await DataBaseHelper.instance.checkBuyerAndItem(
+                    widget.item?.id ?? 0,
+                  );
+
+                  if (wasBought) {
+                    return;
+                  }
+
                   if (buyerExists) {
                     await DataBaseHelper.instance.updateBuyerItem(
                       Buyer(
                           buyerID: widget.user.id,
-                          itemID: widget.item?.id ?? 0),
+                          itemID: widget.item?.id ?? 0,
+                          beenBought: 0),
                     );
-                  }
-                  else{
+                  } else {
                     await DataBaseHelper.instance.insertBuyerItem(
                       Buyer(
                           buyerID: widget.user.id,
-                          itemID: widget.item?.id ?? 0),
+                          itemID: widget.item?.id ?? 0,
+                          beenBought: 0),
                     );
                   }
-                });
+
               },
               child: const Text("Bid: "),
             ),
