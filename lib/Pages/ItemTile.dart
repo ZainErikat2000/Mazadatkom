@@ -40,6 +40,7 @@ class ItemTile extends StatelessWidget {
             minBid: mb,
             startPrice: sp,
             item: it,
+            user: us,
           ),
         ),
       );

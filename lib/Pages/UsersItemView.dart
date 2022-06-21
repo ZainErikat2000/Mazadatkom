@@ -70,8 +70,8 @@ class _UsersItemViewState extends State<UsersItemView> {
                       minBid: auction?.minBid ?? 0,
                       startPrice: auction?.startPrice ?? 0,
                       isActive: 1,
-                      date: '',
-                      time: ''),
+                      date: auction?.date ?? '',
+                      time: auction?.time ?? ''),
                 );
               } else {
                 await DataBaseHelper.instance.updateAuction(

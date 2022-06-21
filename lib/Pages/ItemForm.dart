@@ -196,26 +196,55 @@ class _ItemFormPageState extends State<ItemFormPage> {
                           firstDate: DateTime.now(),
                           lastDate: endDate)
                       .then((value) {
+                        if(value == null)
+                          {
+                            _hasTime = false;
+                            return;
+                          }
                     _dateTime = value;
                     _dtString =
                         '${_dateTime?.year}/${_dateTime?.month}/${_dateTime?.day}';
                     showTimePicker(
                             context: context, initialTime: TimeOfDay.now())
                         .then((value) {
+                      if(value == null)
+                      {
+                        _hasTime = false;
+                        return;
+                      }
                       _timeOfDay = value;
                       _todString = '${_timeOfDay?.hour}:${_timeOfDay?.minute}';
+                      _hasTime = true;
                     });
                   });
                 },
-                child: Text('Pick a Date & Time'),
+                child: const Text('Pick a Date & Time'),
               ),
             Text(warningText,style: const TextStyle(color: Colors.redAccent),),
             ElevatedButton(
                 onPressed: () {
+                  if(dropDowVal == 'None')
+                    {
+                      setState(() {
+                        warningText = 'please choose a category';
+                        return;
+                      });
+                    }
+
+                  for(int i = 0; i<_formInput.length ; i++)
+                    {
+                      if(_formInput[i].text == ''){
+                        setState(() {
+                          warningText = 'please fill al the fields';
+                          return;
+                        });
+                      }
+                    }
+
                   if(!_hasTime)
                   {
                     setState(() {
-                      warningText = 'please fill all the fields';
+                      warningText = 'please pick a time';
                       return;
                     });
                   }

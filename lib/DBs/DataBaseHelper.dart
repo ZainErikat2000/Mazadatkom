@@ -7,6 +7,8 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'Buyer_Model.dart';
+
 class DataBaseHelper {
   static const _databaseName = 'mainDatabase.db';
   static const _databaseVersion = 1;
@@ -38,6 +40,11 @@ class DataBaseHelper {
   static const _userItemTableName = 'UsersItems';
   static const _userItemColUserID = 'user_id';
   static const _userItemColItemID = 'item_id';
+
+  //Buyers Tables
+  static const _buyerTableName = 'buyers';
+  static const _buyerColUserID = 'buyer_id';
+  static const _buyerColItemID = 'item_id';
 
   //singleton
   DataBaseHelper._constructDB();
@@ -109,6 +116,15 @@ class DataBaseHelper {
     FOREIGN KEY($_userItemColItemID) REFERENCES $_itemsTableName($_itemColID)
     )
     ''');
+
+    await database.execute('''
+    CREATE TABLE $_buyerTableName(
+    $_buyerColUserID INT NOT NULL,
+    $_buyerColItemID INT NOT NULL,
+    FOREIGN KEY($_buyerColUserID) REFERENCES $_userTableName($_userColID),
+    FOREIGN KEY($_buyerColItemID) REFERENCES $_itemsTableName($_itemColID)
+    )
+    ''');
   }
 
   //Allow foreign keys
@@ -146,13 +162,15 @@ class DataBaseHelper {
   Future<void> deleteItem(int id) async {
     Database? database = await instance.database;
 
-    await database?.execute('''
+    await database?.execute(
+      '''
     begin
     DELETE FROM $_itemsTableName WHERE $_itemColID = ?
     DELETE FROM $_auctionTableName WHERE $_auctionColID = ?
     DELETE FROM $_userItemTableName WHERE $_userItemColItemID = ?
     commit
-    ''',);
+    ''',
+    );
   }
 
   Future<int?> getItemsCount() async {
@@ -309,20 +327,80 @@ class DataBaseHelper {
         where: '$_userItemColUserID = ?', whereArgs: [userItem.userID]);
   }
 
+  //buyers items methods
   Future<void> updateUserItem(UserItem userItem) async {
     Database? database = await instance.database;
     await database?.update(_userItemTableName, userItem.toMap(),
         where: '$_userItemColUserID = ?', whereArgs: [userItem.userID]);
   }
 
-  Future<UserItem> getUserItem(int itemID)async{
+  Future<void> insertBuyerItem(Buyer buyerItem) async {
+    Database? database = await instance.database;
+    await database?.insert(_buyerTableName, buyerItem.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> deleteBuyerItem(Buyer buyerItem) async {
+    Database? database = await instance.database;
+    await database?.delete(_buyerTableName,
+        where: '$_buyerColItemID = ?', whereArgs: [buyerItem.buyerID]);
+  }
+
+  Future<void> updateBuyerItem(Buyer buyerItem) async {
+    Database? database = await instance.database;
+    await database?.update(_buyerColItemID, buyerItem.toMap(),
+        where: '$_buyerColItemID = ?', whereArgs: [buyerItem.itemID]);
+  }
+
+  Future<bool> checkBuyerAndItem(int userID, int itemID) async {
+    Database? database = await instance.database;
+
+    List<Map>? result = await database?.query(
+      _buyerTableName,
+      where: '$_buyerColUserID = ? AND $_buyerColItemID = ?',
+      whereArgs: [
+        userID,
+        itemID,
+      ],
+    );
+
+    int length = result?.length ?? 0;
+    if (length == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<List<Buyer>> getBuyersItems(int id) async {
+    Database? database = await instance.database;
+    List<Map>? result = await database?.query(
+      _buyerTableName,
+      where: '$_buyerColUserID = ?',
+      whereArgs: [id],
+    );
+
+    int length = result?.length ?? 0;
+
+    return List.generate(
+      length,
+      (i) => Buyer(
+        buyerID: result![i][_buyerColUserID],
+        itemID: result[i][_buyerColItemID],
+      ),
+    );
+  }
+
+  Future<UserItem> getUserItem(int itemID) async {
     Database? database = await DataBaseHelper.instance.database;
 
-    List<Map<String,dynamic>>? result = await database?.rawQuery('''
+    List<Map<String, dynamic>>? result = await database?.rawQuery('''
     SELECT *
     FROM $_userItemTableName
     WHERE $_userItemColItemID = ?
-    ''',[itemID,]);
+    ''', [
+      itemID,
+    ]);
 
     UserItem userItem = UserItem.fromMap(result![0]);
     return userItem;
@@ -391,8 +469,14 @@ class DataBaseHelper {
     Database? database = await instance.database;
 
     //prints table rows
-    (await database?.query(_auctionTableName,
-            columns: [_auctionColID, _auctionColStartPrice, _auctionColMinBid,_auctionColIsActive,_auctionColDate,_auctionColTime]))
+    (await database?.query(_auctionTableName, columns: [
+      _auctionColID,
+      _auctionColStartPrice,
+      _auctionColMinBid,
+      _auctionColIsActive,
+      _auctionColDate,
+      _auctionColTime
+    ]))
         ?.forEach((row) {
       print(row);
     });
