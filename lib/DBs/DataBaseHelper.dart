@@ -401,7 +401,7 @@ class DataBaseHelper {
     }
   }
 
-  Future<Buyer> getBuyer(int itemID) async {
+  Future<Buyer?> getBuyer(int itemID) async {
     Database? database = await instance.database;
 
     List<Map<String,dynamic>>? result = await database?.query(
@@ -409,6 +409,11 @@ class DataBaseHelper {
       where: '$_buyerColItemID = ?',
       whereArgs: [itemID],
     );
+
+    if(result?.isEmpty ?? true)
+      {
+        return null;
+      }
 
     return Buyer.fromMap(result![0]);
   }

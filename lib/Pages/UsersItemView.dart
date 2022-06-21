@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
+import 'package:mazadatkom/DBs/User_Model.dart';
 
 import '../DBs/Auction_Model.dart';
 import '../DBs/Buyer_Model.dart';
@@ -73,6 +74,20 @@ class _UsersItemViewState extends State<UsersItemView> {
 
               bool pendingBought = await DataBaseHelper.instance
                   .checkBuyerAndItem(widget.item?.id ?? 0);
+
+              Buyer? buyer = await DataBaseHelper.instance
+                  .getBuyer(widget.item?.id ?? 0);
+
+
+
+              if(wasBought){
+                User name = await DataBaseHelper.instance.getUserByID(buyer?.buyerID ?? 0);
+                setState(() {
+                  warningText = 'already bought by "${name.name}"';
+                });
+                return;
+              }
+
               if (status == 0) {
                 await DataBaseHelper.instance.updateAuction(
                   Auction(
@@ -85,6 +100,7 @@ class _UsersItemViewState extends State<UsersItemView> {
                 );
               } else {
 
+
                 if (!pendingBought) {
                   setState(() {
                     warningText = 'no buyers yet';
@@ -92,19 +108,11 @@ class _UsersItemViewState extends State<UsersItemView> {
                   return;
                 }
 
-                if(wasBought){
-                  setState(() {
-                    warningText = 'already bought';
-                  });
-                  return;
-                }
-                Buyer buyer = await DataBaseHelper.instance
-                    .getBuyer(widget.item?.id ?? 0);
 
                 await DataBaseHelper.instance.updateBuyerItem(
                   Buyer(
-                      buyerID: buyer.buyerID,
-                      itemID: buyer.itemID,
+                      buyerID: buyer?.buyerID ?? 0,
+                      itemID: buyer?.itemID ?? 0,
                       beenBought: 1),
                 );
 
