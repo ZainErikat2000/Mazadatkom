@@ -96,10 +96,11 @@ class _AuctionPageState extends State<AuctionPage> {
                 int? currentBid = int.parse(bidTextController.text);
                 int minBid = auction?.minBid ?? 0;
                 if (currentBid < minBid) {
+                  print('below');
                   setState(() {
                     warningText = 'below minimum bid';
-                    return;
                   });
+                  return;
                 }
 
                 setState(() {
