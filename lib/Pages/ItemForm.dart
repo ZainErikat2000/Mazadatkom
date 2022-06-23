@@ -19,7 +19,7 @@ class ItemFormPage extends StatefulWidget {
 class _ItemFormPageState extends State<ItemFormPage> {
   Widget buildItemBox(BuildContext context) {
     return ItemTile(
-      user: User(id: 1, name: '', email: '', password: ''),
+      user: User(id: 1, name: '', email: '', password: '',contactInfo: 0),
       color: Colors.white,
       description: '',
       item: Item(id: 1, name: '', description: '', category: ''),
@@ -73,7 +73,8 @@ class _ItemFormPageState extends State<ItemFormPage> {
   }
 
   void getFormInputs() async {
-    var itemsCount = await DataBaseHelper.instance.getItemsCount();
+    int itemsCount = await DataBaseHelper.instance.getItemsCount() ?? 0;
+    itemsCount++;
 
     if (dropDowVal == '' || dropDowVal == 'None') {
       setState(() {
@@ -223,6 +224,7 @@ class _ItemFormPageState extends State<ItemFormPage> {
                 child: const Text('Pick a Date & Time'),
               ),
             Text(warningText,style: const TextStyle(color: Colors.redAccent),),
+            ElevatedButton(onPressed: (){}, child: const Text('Pick gallery image')),
             ElevatedButton(
                 onPressed: () {
                   if(dropDowVal == 'None')

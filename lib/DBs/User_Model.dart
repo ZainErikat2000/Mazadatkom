@@ -3,13 +3,14 @@ class User {
   late final String name;
   late final String email;
   late final String password;
+  late final int contactInfo;
 
-  User({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.password
-  });
+  User(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.password,
+      required this.contactInfo});
 
   Map<String, dynamic> toMap() {
     return {
@@ -17,6 +18,7 @@ class User {
       'name': name,
       'email': email,
       'pass': password,
+      'info': contactInfo,
     };
   }
 
@@ -24,5 +26,6 @@ class User {
       : id = result['id'],
         name = result['name'],
         email = result['email'],
-        password = result['pass'];
+        password = result['pass'],
+        contactInfo = result['info'];
 }

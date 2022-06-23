@@ -35,6 +35,7 @@ class DataBaseHelper {
   static const _userColName = 'name';
   static const _userColEmail = 'email';
   static const _userColPass = 'pass';
+  static const _userColContactInfo = 'info';
 
   //User's Items Table
   static const _userItemTableName = 'UsersItems';
@@ -310,7 +311,7 @@ class DataBaseHelper {
     print('printing users');
     //prints table rows
     (await database?.query(_userTableName,
-            columns: [_userColID, _userColName, _userColEmail, _userColPass]))
+            columns: [_userColID, _userColName, _userColEmail, _userColPass,_userColContactInfo]))
         ?.forEach((row) {
       print(row);
     });

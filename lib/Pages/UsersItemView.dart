@@ -83,7 +83,8 @@ class _UsersItemViewState extends State<UsersItemView> {
               if(wasBought){
                 User name = await DataBaseHelper.instance.getUserByID(buyer?.buyerID ?? 0);
                 setState(() {
-                  warningText = 'already bought by "${name.name}"';
+                  warningText = '''already bought by "${name.name}"
+                  Phone Number: ${name.contactInfo}''';
                 });
                 return;
               }

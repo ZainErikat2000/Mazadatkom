@@ -15,6 +15,9 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
 
+  //contact info controller
+  TextEditingController contactInfoController = TextEditingController();
+
   //password check controllers
   TextEditingController passController = TextEditingController();
   TextEditingController passRepeatController = TextEditingController();
@@ -74,6 +77,12 @@ class _SignUpPageState extends State<SignUpPage> {
                       hintText: 'Repeat Password', icon: Icon(Icons.key)),
                   obscureText: true,
                 ),
+                TextFormField(
+                  controller: contactInfoController,
+                  decoration: const InputDecoration(
+                      hintText: 'Phone Number', icon: Icon(Icons.key)),
+                  obscureText: true,
+                ),
                 const SizedBox(
                   height: 16,
                 ),
@@ -118,10 +127,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     bool emailValid = false;
                     try {
                       emailValid = RegExp(
-                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                           .hasMatch(email);
-                    }
-                    catch(e){
+                    } catch (e) {
                       print(e.toString());
                     }
 
@@ -155,14 +163,25 @@ class _SignUpPageState extends State<SignUpPage> {
                       return;
                     }
 
+                    String phoneNumString = contactInfoController.text;
+                    int phoneNum = int.parse(contactInfoController.text);
+
+                    if (phoneNumString.length > 10) {
+                      setState(() {
+                        credNotify = 'invalid phone number';
+                      });
+                    }
+
                     int numUsers =
                         await DataBaseHelper.instance.getUsersCount() ?? 0;
 
                     User user = User(
-                        id: numUsers + 1,
-                        name: name,
-                        email: email,
-                        password: pass);
+                      id: numUsers + 1,
+                      name: name,
+                      email: email,
+                      password: pass,
+                      contactInfo: phoneNum,
+                    );
 
                     await DataBaseHelper.instance.insertUser(user);
                     await DataBaseHelper.instance.printUsers();
