@@ -70,18 +70,18 @@ class _UsersItemViewState extends State<UsersItemView> {
           ElevatedButton(
             onPressed: () async {
               int status = auction?.isActive ?? 0;
-              bool wasBought = await DataBaseHelper.instance.checkBought(widget.item?.id ?? 0);
+              bool wasBought = await DataBaseHelper.instance
+                  .checkBought(widget.item?.id ?? 0);
 
               bool pendingBought = await DataBaseHelper.instance
                   .checkBuyerAndItem(widget.item?.id ?? 0);
 
-              Buyer? buyer = await DataBaseHelper.instance
-                  .getBuyer(widget.item?.id ?? 0);
+              Buyer? buyer =
+                  await DataBaseHelper.instance.getBuyer(widget.item?.id ?? 0);
 
-
-
-              if(wasBought){
-                User name = await DataBaseHelper.instance.getUserByID(buyer?.buyerID ?? 0);
+              if (wasBought) {
+                User name = await DataBaseHelper.instance
+                    .getUserByID(buyer?.buyerID ?? 0);
                 setState(() {
                   warningText = '''already bought by "${name.name}"
                   Phone Number: ${name.contactInfo}''';
@@ -92,23 +92,22 @@ class _UsersItemViewState extends State<UsersItemView> {
               if (status == 0) {
                 await DataBaseHelper.instance.updateAuction(
                   Auction(
-                      id: auction?.id,
-                      minBid: auction?.minBid ?? 0,
-                      startPrice: auction?.startPrice ?? 0,
-                      isActive: 1,
-                      date: auction?.date ?? '',
-                      time: auction?.time ?? ''),
+                    id: auction?.id,
+                    minBid: auction?.minBid ?? 0,
+                    startPrice: auction?.startPrice ?? 0,
+                    isActive: 1,
+                    date: auction?.date ?? '',
+                    time: auction?.time ?? '',
+                    image: auction?.image ?? '',
+                  ),
                 );
               } else {
-
-
                 if (!pendingBought) {
                   setState(() {
                     warningText = 'no buyers yet';
                   });
                   return;
                 }
-
 
                 await DataBaseHelper.instance.updateBuyerItem(
                   Buyer(
@@ -119,12 +118,14 @@ class _UsersItemViewState extends State<UsersItemView> {
 
                 await DataBaseHelper.instance.updateAuction(
                   Auction(
-                      id: auction?.id,
-                      minBid: auction?.minBid ?? 0,
-                      startPrice: auction?.startPrice ?? 0,
-                      isActive: 0,
-                      date: auction?.date ?? '',
-                      time: auction?.time ?? ''),
+                    id: auction?.id,
+                    minBid: auction?.minBid ?? 0,
+                    startPrice: auction?.startPrice ?? 0,
+                    isActive: 0,
+                    date: auction?.date ?? '',
+                    time: auction?.time ?? '',
+                    image: auction?.image ?? '',
+                  ),
                 );
               }
               auction =

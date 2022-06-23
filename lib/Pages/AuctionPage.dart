@@ -56,16 +56,7 @@ class _AuctionPageState extends State<AuctionPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const SizedBox(
-              width: 150,
-              height: 150,
-              child: DecoratedBox(
-                child: Icon(Icons.image),
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                ),
-              ),
-            ),
+            Image.network('https://picsum.photos/200'),
             SizedBox(
               child: Text("${widget.item?.name}"),
             ),
@@ -118,6 +109,7 @@ class _AuctionPageState extends State<AuctionPage> {
                       startPrice: newPrice,
                       time: auction?.time ?? '',
                       isActive: auction?.isActive ?? 0,
+                      image: auction?.image ?? '',
                     ),
                   );
 

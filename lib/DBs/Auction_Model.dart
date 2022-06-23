@@ -5,15 +5,16 @@ class Auction {
   late final int isActive;
   late final String date;
   late final String time;
+  late final String image;
 
-  Auction({
-    required this.id,
-    required this.startPrice,
-    required this.minBid,
-    required this.isActive,
-    required this.date,
-    required this.time
-  });
+  Auction(
+      {required this.id,
+      required this.startPrice,
+      required this.minBid,
+      required this.isActive,
+      required this.date,
+      required this.time,
+      required this.image});
 
   Map<String, dynamic> toMap() {
     return {
@@ -23,6 +24,7 @@ class Auction {
       'is_active': isActive,
       'date': date,
       'time': time,
+      'image': image,
     };
   }
 
@@ -32,5 +34,6 @@ class Auction {
         minBid = result['min_bid'],
         isActive = result['is_active'],
         date = result['date'],
-        time = result['time'];
+        time = result['time'],
+        image = result['image'];
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
-
+import 'dart:io';
 import '../DBs/Auction_Model.dart';
 import '../DBs/Item_Model.dart';
 
@@ -23,12 +23,14 @@ class AuctionPageInactive extends StatefulWidget {
 
 class _AuctionPageState extends State<AuctionPageInactive> {
   Auction? auction;
+  String imagePath = '';
 
   @override
   void setState(VoidCallback fn) async {
     // TODO: implement setState
     super.setState(fn);
     auction = await DataBaseHelper.instance.getAuction(widget.item?.id ?? 0);
+    imagePath = auction?.image ?? '';
   }
 
   final TextEditingController bidCompareCont = TextEditingController();
@@ -55,16 +57,7 @@ class _AuctionPageState extends State<AuctionPageInactive> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const SizedBox(
-              width: 150,
-              height: 150,
-              child: DecoratedBox(
-                child: Icon(Icons.image),
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                ),
-              ),
-            ),
+            Image.file(File(imagePath,),),
             SizedBox(
               child: Text("${widget.item?.name}"),
             ),

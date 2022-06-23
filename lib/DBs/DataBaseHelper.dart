@@ -28,6 +28,7 @@ class DataBaseHelper {
   static const _auctionColIsActive = 'is_active';
   static const _auctionColDate = 'date';
   static const _auctionColTime = 'time';
+  static const _auctionColImage = 'image';
 
   //User table variables
   static const _userTableName = 'Users';
@@ -97,6 +98,7 @@ class DataBaseHelper {
     $_auctionColIsActive INT NOT NULL,
     $_auctionColDate TEXT NOT NULL,
     $_auctionColTime TEXT NOT NULL,
+    $_auctionColImage TEXT NOT NULL,
     FOREIGN KEY($_auctionColID) REFERENCES $_itemsTableName($_itemColID)
     )
     ''');
@@ -106,7 +108,8 @@ class DataBaseHelper {
     $_userColID INT PRIMARY KEY NOT NULL,
     $_userColName TEXT NOT NULL,
     $_userColEmail TEXT NOT NULL,
-    $_userColPass TEXT NOT NULL
+    $_userColPass TEXT NOT NULL,
+    $_userColContactInfo INT NOT NULL
     )
     ''');
 
@@ -310,17 +313,26 @@ class DataBaseHelper {
 
     print('printing users');
     //prints table rows
-    (await database?.query(_userTableName,
-            columns: [_userColID, _userColName, _userColEmail, _userColPass,_userColContactInfo]))
+    (await database?.query(_userTableName, columns: [
+      _userColID,
+      _userColName,
+      _userColEmail,
+      _userColPass,
+      _userColContactInfo
+    ]))
         ?.forEach((row) {
       print(row);
     });
   }
 
-  Future<User> getUserByID(int userID)async{
-    Database? database =  await instance.database;
+  Future<User> getUserByID(int userID) async {
+    Database? database = await instance.database;
 
-    List<Map<String,dynamic>>? result = await database?.query(_userTableName,where: '$_userColID = ?',whereArgs: [userID],);
+    List<Map<String, dynamic>>? result = await database?.query(
+      _userTableName,
+      where: '$_userColID = ?',
+      whereArgs: [userID],
+    );
     return User.fromMap(result![0]);
   }
 
@@ -405,16 +417,15 @@ class DataBaseHelper {
   Future<Buyer?> getBuyer(int itemID) async {
     Database? database = await instance.database;
 
-    List<Map<String,dynamic>>? result = await database?.query(
+    List<Map<String, dynamic>>? result = await database?.query(
       _buyerTableName,
       where: '$_buyerColItemID = ?',
       whereArgs: [itemID],
     );
 
-    if(result?.isEmpty ?? true)
-      {
-        return null;
-      }
+    if (result?.isEmpty ?? true) {
+      return null;
+    }
 
     return Buyer.fromMap(result![0]);
   }
@@ -444,8 +455,10 @@ class DataBaseHelper {
 
     print('printing users');
     //prints table rows
-    (await database?.query(_buyerTableName,
-        columns: [_buyerColUserID, _buyerColItemID,_buyerBeenBought],))
+    (await database?.query(
+      _buyerTableName,
+      columns: [_buyerColUserID, _buyerColItemID, _buyerBeenBought],
+    ))
         ?.forEach((row) {
       print(row);
     });
@@ -529,14 +542,17 @@ class DataBaseHelper {
     Database? database = await instance.database;
 
     //prints table rows
-    (await database?.query(_auctionTableName, columns: [
-      _auctionColID,
-      _auctionColStartPrice,
-      _auctionColMinBid,
-      _auctionColIsActive,
-      _auctionColDate,
-      _auctionColTime
-    ]))
+    (await database?.query(
+      _auctionTableName,
+      columns: [
+        _auctionColID,
+        _auctionColStartPrice,
+        _auctionColMinBid,
+        _auctionColIsActive,
+        _auctionColDate,
+        _auctionColTime,
+      ],
+    ))
         ?.forEach((row) {
       print(row);
     });

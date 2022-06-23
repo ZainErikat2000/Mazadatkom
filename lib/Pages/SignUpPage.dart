@@ -81,7 +81,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   controller: contactInfoController,
                   decoration: const InputDecoration(
                       hintText: 'Phone Number', icon: Icon(Icons.key)),
-                  obscureText: true,
                 ),
                 const SizedBox(
                   height: 16,
@@ -185,6 +184,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
                     await DataBaseHelper.instance.insertUser(user);
                     await DataBaseHelper.instance.printUsers();
+
+                    Navigator.pop;
                   },
                   child: const Text('Sign Up'),
                 ),
