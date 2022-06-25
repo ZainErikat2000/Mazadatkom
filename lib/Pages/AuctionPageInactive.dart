@@ -57,7 +57,12 @@ class _AuctionPageState extends State<AuctionPageInactive> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.file(File(imagePath,),height: 250,width: 250),
+            Image.file(
+                File(
+                  imagePath,
+                ),
+                height: 250,
+                width: 250),
             SizedBox(
               child: Text("${widget.item?.name}"),
             ),
@@ -74,7 +79,10 @@ class _AuctionPageState extends State<AuctionPageInactive> {
             Text('current price: $strtp'),
             Row(
               children: <Widget>[
-                Text("Auction's at: ${auction?.date}  ${auction?.time}")
+                Text(
+                  "Auction's at: ${auction?.date}  ${auction?.time}",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                )
               ],
               mainAxisAlignment: MainAxisAlignment.center,
             ),

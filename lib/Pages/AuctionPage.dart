@@ -165,6 +165,12 @@ class _AuctionPageState extends State<AuctionPage> {
                 Navigator.pop(context);
               },
               child: const Text("Exit Auction"),
+            ),
+            const Text(
+              """NOTE: If you bid you'll be registered as a potential buyer,
+           until someone else bids,
+           even if you exit the auction""",
+              textAlign: TextAlign.center,
             )
           ],
         ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
@@ -20,6 +22,7 @@ class _UsersItemViewState extends State<UsersItemView> {
   String activeStatus = 'No';
   String activeStatusButton = 'Activate';
   String warningText = '';
+  String imagePath = '';
 
   //initState can't handle async methods thus I used setState
   @override
@@ -46,7 +49,7 @@ class _UsersItemViewState extends State<UsersItemView> {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        children: <Widget>[Image.file(File(imagePath,),height: 250,width: 250),
           Text(
             widget.item?.name ?? 'no name',
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -65,7 +68,7 @@ class _UsersItemViewState extends State<UsersItemView> {
           Text('Is active?: ${auction?.isActive == 1 ? 'Yes' : 'No'}'),
           Text(
             warningText,
-            style: const TextStyle(color: Colors.redAccent),
+            style: const TextStyle(color: Colors.redAccent),textAlign: TextAlign.center,
           ),
           ElevatedButton(
             onPressed: () async {
