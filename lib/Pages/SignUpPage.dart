@@ -190,7 +190,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     await DataBaseHelper.instance.insertUser(user);
                     await DataBaseHelper.instance.printUsers();
 
-                    Navigator.pop;
+                    Navigator.pop(context);
                   },
                   child: const Text('Sign Up'),
                 ),

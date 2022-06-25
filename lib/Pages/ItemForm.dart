@@ -290,7 +290,7 @@ class _ItemFormPageState extends State<ItemFormPage> {
                         }
 
                       getFormInputs();
-                      Navigator.pop;
+                      Navigator.pop(context);
                     },
                     child: const Text('ok')),
                 ElevatedButton(
