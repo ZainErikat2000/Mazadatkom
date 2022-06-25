@@ -539,8 +539,8 @@ class DataBaseHelper {
     List<Buyer> buyerItems = List.generate(
       length,
           (i) => Buyer(
-        itemID: queryResult[i][_userItemColItemID],
-        buyerID: queryResult[i][_userItemColUserID],
+        itemID: queryResult[i][_buyerColItemID],
+        buyerID: queryResult[i][_buyerColUserID],
             beenBought: queryResult[i][_buyerBeenBought]
       ),
     );

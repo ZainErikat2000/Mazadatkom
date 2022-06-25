@@ -20,8 +20,8 @@ class ItemsList extends StatelessWidget {
           var dataLength = data!.length;
 
           return dataLength == 0
-              ? Center(
-                  child: Text('Fetching Data'),
+              ? const Center(
+                  child: Text('No data found'),
                 )
               : ListView.builder(
                   itemCount: dataLength,

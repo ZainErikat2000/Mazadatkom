@@ -101,7 +101,11 @@ class _SignInMainState extends State<SignInMain> {
                   textAlign: TextAlign.center,
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () {setState(() {
+                    passController.clear();
+                    nameController.clear();
+                  });
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(

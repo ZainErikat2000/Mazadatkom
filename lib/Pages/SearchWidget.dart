@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mazadatkom/Custom_Widgets/ItemsList.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/Pages/AuctionPage.dart';
+import 'package:mazadatkom/Pages/BuyersItemsPage.dart';
 import 'package:mazadatkom/Pages/ItemTile.dart';
 import 'package:mazadatkom/Pages/ItemForm.dart';
 import 'package:mazadatkom/Pages/SearchResultsPage.dart';
@@ -11,7 +13,7 @@ import '../DBs/User_Model.dart';
 
 class SearchWidget extends StatefulWidget {
   const SearchWidget({Key? key, required this.user}) : super(key: key);
-  final User? user;
+  final User user;
 
   @override
   _SearchWidgetState createState() => _SearchWidgetState();
@@ -50,22 +52,86 @@ class _SearchWidgetState extends State<SearchWidget> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            const Text('User'),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserItemsPage(
-                      user: widget.user,
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.person,
+            Container(
+              color: Colors.grey[300],
+              child: const Text(
+                'User Overview',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
-            )
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "User's items",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              color: Colors.grey[300],
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserItemsPage(
+                        user: widget.user,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.person,
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              'Bought items',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              color: Colors.grey[300],
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BuyerItemsPage(
+                        user: widget.user,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.shopping_cart,
+                ),
+              ),
+            ),
+            SizedBox(
+                width: 200,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'LOG OUT',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                )),
           ],
         ),
       ),
@@ -73,19 +139,20 @@ class _SearchWidgetState extends State<SearchWidget> {
       appBar: AppBar(
         title: searchBar,
         centerTitle: true,
-        actions: <Widget>[DropdownButton(
-        value: dropDowVal,
-        items: categories,
-        onChanged: (category) {
-          if (category is String) {
-            setState(
+        actions: <Widget>[
+          DropdownButton(
+            value: dropDowVal,
+            items: categories,
+            onChanged: (category) {
+              if (category is String) {
+                setState(
                   () {
-                dropDowVal = category;
-              },
-            );
-          }
-        },
-      ),
+                    dropDowVal = category;
+                  },
+                );
+              }
+            },
+          ),
           IconButton(
               onPressed: () {
                 Navigator.push(
@@ -94,7 +161,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                     builder: (context) => SearchResultsPage(
                       searchTerm: searchController.text,
                       category: dropDowVal,
-                      user: widget.user!,
+                      user: widget.user,
                     ),
                   ),
                 );
@@ -125,18 +192,20 @@ class _SearchWidgetState extends State<SearchWidget> {
       //listview within the container
       body: Container(
         color: Colors.grey[300],
-        child: ItemsList(user: widget.user!),
+        child: ItemsList(user: widget.user),
       ),
 
       //floating action button to add items
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ItemFormPage(
-                        user: widget.user,
-                      )));
+            context,
+            MaterialPageRoute(
+              builder: (context) => ItemFormPage(
+                user: widget.user,
+              ),
+            ),
+          );
         },
         tooltip: 'increment',
         child: const Icon(Icons.add),
