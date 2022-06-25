@@ -109,7 +109,7 @@ class DataBaseHelper {
     $_userColName TEXT NOT NULL,
     $_userColEmail TEXT NOT NULL,
     $_userColPass TEXT NOT NULL,
-    $_userColContactInfo INT NOT NULL
+    $_userColContactInfo TEXT NOT NULL
     )
     ''');
 
@@ -179,10 +179,10 @@ class DataBaseHelper {
     );
   }
 
-  Future<int?> getItemsCount() async {
+  Future<int> getItemsCount() async {
     Database? database = await instance.database;
     List<Map>? result = await database?.query(_itemsTableName);
-    return result?.length;
+    return result?.length ?? 0;
   }
 
   //auctions table operations
@@ -517,6 +517,53 @@ class DataBaseHelper {
     return List.generate(
       length1,
       (i) => Item(
+        id: items[i][_itemColID],
+        name: items[i][_itemColName],
+        description: items[i][_itemColDescription],
+        category: items[i][_itemColCategory],
+      ),
+    );
+  }
+
+  Future<List<Item>> getBuyerItems({int? userID}) async {
+    Database? database = await DataBaseHelper.instance.database;
+
+    List<Map<String, dynamic>> queryResult = await database?.query(
+        _buyerTableName,
+        where: '$_buyerBeenBought = ?',
+        whereArgs: [1,userID]) ??
+        List<Map<String, dynamic>>.empty();
+
+    int length = queryResult.length;
+
+    List<Buyer> buyerItems = List.generate(
+      length,
+          (i) => Buyer(
+        itemID: queryResult[i][_userItemColItemID],
+        buyerID: queryResult[i][_userItemColUserID],
+            beenBought: queryResult[i][_buyerBeenBought]
+      ),
+    );
+
+    List<Map<String, dynamic>> items =
+    List<Map<String, dynamic>>.empty(growable: true);
+
+    for (int i = 0; i < buyerItems.length; i++) {
+      List<Map<String, dynamic>> x = await database?.query(
+        _itemsTableName,
+        where: '$_itemColID = ?',
+        whereArgs: [buyerItems[i].itemID],
+      ) ??
+          List.empty();
+      print(x[0]["id"]);
+      items.add(x[0]);
+    }
+
+    int length1 = items.length;
+
+    return List.generate(
+      length1,
+          (i) => Item(
         id: items[i][_itemColID],
         name: items[i][_itemColName],
         description: items[i][_itemColDescription],

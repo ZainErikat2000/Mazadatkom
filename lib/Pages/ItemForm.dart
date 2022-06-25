@@ -1,4 +1,4 @@
-import 'dart:convert';
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,10 +8,9 @@ import 'package:mazadatkom/DBs/Auction_Model.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/Item_Model.dart';
 import 'package:mazadatkom/DBs/UserItem_Model.dart';
-import 'package:mazadatkom/Image%20Utility/Utility.dart';
+
 import 'package:mazadatkom/Pages/ItemTile.dart';
-import 'dart:convert';
-import 'dart:typed_data';
+
 
 import '../DBs/User_Model.dart';
 
@@ -26,7 +25,7 @@ class ItemFormPage extends StatefulWidget {
 class _ItemFormPageState extends State<ItemFormPage> {
   Widget buildItemBox(BuildContext context) {
     return ItemTile(
-      user: User(id: 1, name: '', email: '', password: '', contactInfo: 0),
+      user: User(id: 1, name: '', email: '', password: '', contactInfo: ''),
       color: Colors.white,
       description: '',
       item: Item(id: 1, name: '', description: '', category: ''),
@@ -85,7 +84,7 @@ class _ItemFormPageState extends State<ItemFormPage> {
   }
 
   void getFormInputs() async {
-    int itemsCount = await DataBaseHelper.instance.getItemsCount() ?? 0;
+    int itemsCount = await DataBaseHelper.instance.getItemsCount();
     itemsCount++;
 
     if (dropDowVal == '' || dropDowVal == 'None') {
@@ -123,7 +122,7 @@ class _ItemFormPageState extends State<ItemFormPage> {
     await DataBaseHelper.instance.insertAuction(auction);
 
     UserItem userItem =
-        UserItem(itemID: itemsCount ?? 0, userID: widget.user?.id ?? 0);
+        UserItem(itemID: itemsCount, userID: widget.user?.id ?? 0);
 
     await DataBaseHelper.instance.insertUserItem(userItem);
   }

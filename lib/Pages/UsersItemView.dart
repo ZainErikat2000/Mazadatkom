@@ -139,19 +139,6 @@ class _UsersItemViewState extends State<UsersItemView> {
               ),
             ),
           ),
-          const SizedBox(
-            height: 16,
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              await DataBaseHelper.instance.deleteItem(widget.item?.id ?? 0);
-              Navigator.pop(context);
-            },
-            child: const Text(
-              'DELETE',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          ),
         ],
       ),
     );

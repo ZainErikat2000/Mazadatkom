@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 
 import '../DBs/User_Model.dart';
@@ -78,6 +79,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   obscureText: true,
                 ),
                 TextFormField(
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
                   controller: contactInfoController,
                   decoration: const InputDecoration(
                       hintText: 'Phone Number', icon: Icon(Icons.key)),
@@ -162,13 +167,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       return;
                     }
 
-                    String phoneNumString = contactInfoController.text;
-                    int phoneNum = int.parse(contactInfoController.text);
+                    String phoneNum = contactInfoController.text;
 
-                    if (phoneNumString.length > 10) {
+                    if (phoneNum.length < 10) {
                       setState(() {
                         credNotify = 'invalid phone number';
                       });
+                      return;
                     }
 
                     int numUsers =

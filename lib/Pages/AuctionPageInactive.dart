@@ -57,7 +57,7 @@ class _AuctionPageState extends State<AuctionPageInactive> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.file(File(imagePath,),),
+            Image.file(File(imagePath,),height: 250,width: 250),
             SizedBox(
               child: Text("${widget.item?.name}"),
             ),

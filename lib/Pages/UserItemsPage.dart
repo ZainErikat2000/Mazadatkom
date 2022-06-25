@@ -39,7 +39,7 @@ class UserItemsPage extends StatelessWidget {
                       name: '',
                       email: '',
                       password: '',
-                      contactInfo: 0,
+                      contactInfo: '',
                     ),
                   ),
                 );

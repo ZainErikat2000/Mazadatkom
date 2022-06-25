@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mazadatkom/DBs/Auction_Model.dart';
 import 'package:mazadatkom/DBs/DataBaseHelper.dart';
 import 'package:mazadatkom/DBs/User_Model.dart';
-
+import 'dart:io';
 import '../DBs/Buyer_Model.dart';
 import '../DBs/Item_Model.dart';
 
@@ -30,12 +30,14 @@ class _AuctionPageState extends State<AuctionPage> {
   final TextEditingController bidTextController = TextEditingController();
   Auction? auction;
   String warningText = '';
+  String imagePath = '';
 
   @override
   void setState(VoidCallback fn) async {
     // TODO: implement setState
     super.setState(fn);
     auction = await DataBaseHelper.instance.getAuction(widget.item?.id ?? 0);
+    imagePath = auction!.image;
   }
 
   @override
@@ -56,7 +58,12 @@ class _AuctionPageState extends State<AuctionPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.network('https://picsum.photos/200'),
+            Image.file(
+                File(
+                  imagePath,
+                ),
+                height: 250,
+                width: 250),
             SizedBox(
               child: Text("${widget.item?.name}"),
             ),
@@ -99,52 +106,51 @@ class _AuctionPageState extends State<AuctionPage> {
                   return;
                 });
 
-                int nullPrice =auction?.startPrice ?? 0;
-                int newPrice =  nullPrice + currentBid;
-                  await DataBaseHelper.instance.updateAuction(
-                    Auction(
-                      id: auction?.id ?? 0,
-                      minBid: auction?.minBid ?? 0,
-                      date: auction?.date ?? '',
-                      startPrice: newPrice,
-                      time: auction?.time ?? '',
-                      isActive: auction?.isActive ?? 0,
-                      image: auction?.image ?? '',
-                    ),
+                int nullPrice = auction?.startPrice ?? 0;
+                int newPrice = nullPrice + currentBid;
+                await DataBaseHelper.instance.updateAuction(
+                  Auction(
+                    id: auction?.id ?? 0,
+                    minBid: auction?.minBid ?? 0,
+                    date: auction?.date ?? '',
+                    startPrice: newPrice,
+                    time: auction?.time ?? '',
+                    isActive: auction?.isActive ?? 0,
+                    image: auction?.image ?? '',
+                  ),
+                );
+
+                //decide wither to insert or update the buyer tuple
+                bool buyerExists =
+                    await DataBaseHelper.instance.checkBuyerAndItem(
+                  widget.item?.id ?? 0,
+                );
+
+                //check if item was bought
+                bool wasBought =
+                    await DataBaseHelper.instance.checkBuyerAndItem(
+                  widget.item?.id ?? 0,
+                );
+
+                if (wasBought) {
+                  return;
+                }
+
+                if (buyerExists) {
+                  await DataBaseHelper.instance.updateBuyerItem(
+                    Buyer(
+                        buyerID: widget.user.id,
+                        itemID: widget.item?.id ?? 0,
+                        beenBought: 0),
                   );
-
-                  //decide wither to insert or update the buyer tuple
-                  bool buyerExists =
-                      await DataBaseHelper.instance.checkBuyerAndItem(
-                    widget.item?.id ?? 0,
+                } else {
+                  await DataBaseHelper.instance.insertBuyerItem(
+                    Buyer(
+                        buyerID: widget.user.id,
+                        itemID: widget.item?.id ?? 0,
+                        beenBought: 0),
                   );
-
-                  //check if item was bought
-                  bool wasBought =
-                      await DataBaseHelper.instance.checkBuyerAndItem(
-                    widget.item?.id ?? 0,
-                  );
-
-                  if (wasBought) {
-                    return;
-                  }
-
-                  if (buyerExists) {
-                    await DataBaseHelper.instance.updateBuyerItem(
-                      Buyer(
-                          buyerID: widget.user.id,
-                          itemID: widget.item?.id ?? 0,
-                          beenBought: 0),
-                    );
-                  } else {
-                    await DataBaseHelper.instance.insertBuyerItem(
-                      Buyer(
-                          buyerID: widget.user.id,
-                          itemID: widget.item?.id ?? 0,
-                          beenBought: 0),
-                    );
-                  }
-
+                }
               },
               child: const Text("Bid: "),
             ),

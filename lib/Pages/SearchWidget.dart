@@ -50,7 +50,7 @@ class _SearchWidgetState extends State<SearchWidget> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            Text('User'),
+            const Text('User'),
             IconButton(
               onPressed: () {
                 Navigator.push(
