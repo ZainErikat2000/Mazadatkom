@@ -530,7 +530,7 @@ class DataBaseHelper {
 
     List<Map<String, dynamic>> queryResult = await database?.query(
         _buyerTableName,
-        where: '$_buyerBeenBought = ?',
+        where: '$_buyerBeenBought = ? AND $_buyerColUserID = ?',
         whereArgs: [1,userID]) ??
         List<Map<String, dynamic>>.empty();
 
